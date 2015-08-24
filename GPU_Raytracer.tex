@@ -1,0 +1,65 @@
+\documentclass[a4paper]{sbgames}               % final
+\usepackage{times}
+\usepackage{graphicx}
+
+%% use this for zero \parindent and non-zero \parskip, intelligently.
+\usepackage{parskip}
+
+%% the 'caption' package provides a nicer-looking replacement
+\usepackage[labelfont=bf,textfont=it]{caption}
+
+\usepackage{url}
+
+%% Paper title.
+\title{A GPU raytracer using OpenCL}
+
+%% Author and Affiliation (multiple authors). Use: and between authors
+
+\author{Henrique Nunes Jung\\ Univesidade do Vale do Rio dos Sinos
+}
+\contactinfo{\{henriquenj\}@gmail.com
+}
+%% Keywords that describe your work.
+\keywords{GPGPU, OpenCL, computer graphics, raytracing}
+
+%% Start of the paper
+% Attention: As you need to insert EPS images in Postscript, 
+% you need to insert PDF images into PDFs. 
+% In the text, extensions cancbe omitted (latex use .eps, pdflatex get .pdf) 
+% To convert them: epstopdf myimage.eps
+\begin{document}
+
+\teaser{
+
+}
+
+%% The ``\maketitle'' command must be the first command after the
+%% ``\begin{document}'' command. It prepares and prints the title block.
+
+\maketitle
+
+%% Abstract section.
+
+\begin{abstract}
+
+In this paper we describe the implementation of a modular raytracer renderer suitable for running inside the OpenCL architecture.
+\end{abstract}
+
+%% The ``\keywordlist'' command prints out the keywords.
+\keywordlist
+\contactlist
+
+\section{Introduction}
+
+\section{Related Work}
+\label{sec:related-work}
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+\section*{Acknowledgements}
+
+
+\bibliographystyle{sbgames}
+\bibliography{template}
+\end{document}

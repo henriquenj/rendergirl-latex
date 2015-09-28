@@ -52,14 +52,68 @@
 
 \section{Introduction}
 
+Platforms for general purpose computing using GPUs started when NVIDIA
+releasead its GPGPU pltaform called CUDA, which is capable of running
+only on NVIDIA hardware. OpenCL was born sometime later using the
+label \emph{heteregenous computing}, in order to specifies that the
+platform was supported by many kinds of hardware and computers
+processors, including CPUs and non-NVIDIA GPUs, which could be
+implemented by any vendor interested in developing hardware focused on
+parallel computation.
+
+Wihin this context, this work aims to provide a modular plugin-based
+raytracer software that takes advantage of the parallel capabilities
+of modern GPUs while maintaing hardware agnosticism by using the
+portability OpenCL provides to hardware vendores and developers. By
+being modular, it's also capable of running inside larger 3D suites
+such as Blender, this way we can delegate other tasks to the host 3D
+program and focuses on the rendering tasks. Work is focused on
+modularity and portability, both of hardware and operating system. The
+first immediate target market is CGI for architecutre, due to simpler
+illumination models and lightining effects used in this field.
+
+We developed a C++ application with wrappers for
+Python %TODO: do I really need a python wrapper?
+and C++ and a reference plugin for Blender, used to validate the
+plugin architecture. The code has only portable system calls and
+OpenCL function calls. In order to guarantee compilation on multiples
+compilers, CMake was used as build system.
+
+Intrinsc problems that arrives with GPU raytracing includes the cost
+of synchronizing and stoping working threads, poor brench prediction,
+high latency of different OpenCL memory models, high latency on the
+bus used between GPU and main memory (usually PCI Express) and the
+broad variaty of GPUs and OpenCL capable hardware, which can generate
+differente results on different setups.
+% TODO add benefits of programming using GPUs, start with "by contrast"
+
+While this software is intended to work on all hardware capable of
+running OpenCL, we tried to focus on GPUs, so optimization for this
+type of processor received preference. It's also worth noting that
+this work does not have real-time constraints and it is designed to be
+used as an \emph{offline} raytracing, so image quality is more
+important than rendering times.
+
 \section{Related Work}
 \label{sec:related-work}
 
 Applications that provides GPU rendering capabilities for
-non-interactive graphics include Blender Cycles\cite{Cycles}
-and Pixar RenderMan. % TODO: add reference here
+non-interactive graphics include Blender Cycles\cite{Cycles} , Octane
+render \cite{Octane}, V-Ray renderer \cite{VRAY}, Redshift
+\cite{Redshift} and Indigo renderer \cite{Indigo}. Indigo and Cycles
+claims to run using the OpenCL architecutre. Cycles is the only one
+that is free software.
 
-% add two articles
+Recent related work on the computing literature includes: Widmer and
+% TODO: should I mention somehow that I copied the abstract
+% description of those guys?
+colleagues proposes effecient acceleration structure for real-time
+screen space raytracing \cite{Widmer}. Ravichandran proposes a
+parallel divide and conquer raytracing suited for GPUs
+\cite{Ravichandran}. Shumskiy and Parshin point out the difference
+between GPUs architectures and its impact on performance of triangle
+collision algorithms \cite{Shumskiy}, which is a critical part of a
+raytracer, adding complexity when trying to optimize the code.
 
 \section{Conclusion}
 \label{sec:conclusion}

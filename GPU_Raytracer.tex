@@ -100,9 +100,19 @@ important than rendering times.
 Applications that provides GPU rendering capabilities for
 non-interactive graphics include Blender Cycles\cite{Cycles} , Octane
 render \cite{Octane}, V-Ray renderer \cite{VRAY}, Redshift
-\cite{Redshift} and Indigo renderer \cite{Indigo}. Indigo and Cycles
-claims to run using the OpenCL architecture. Cycles is the only one
-that is free software.
+\cite{Redshift} and Indigo renderer \cite{Indigo}.
+
+Indigo and Cycles claims to run using the OpenCL architecture. Cycles
+is the only one that is free software; originally it only supported
+CUDA-capable devices, but newer versions of Blender ship with Cycles
+that works with limited features also on OpenCL, although the
+developers specifies that CUDA platform is more mature.\cite{Cycles}
+Also Cycles takes a different approach for device abstraction by
+performing \emph{platform abstraction} by issuing commands to a common
+\emph{device interface} that can redirect function calls to CUDA,
+OpenCL, CPU or network; although the latter is still
+experimental. \cite{CyclesDevel}. Our work delegate the device
+abstraction entirely to OpenCL.
 
 Recent related work on the computing literature includes: Widmer and
 % TODO: should I mention somehow that I copied the abstract
@@ -110,10 +120,17 @@ Recent related work on the computing literature includes: Widmer and
 colleagues proposes efficient acceleration structure for real-time
 screen space raytracing \cite{Widmer}. Ravichandran proposes a
 parallel divide and conquer raytracing suited for GPUs
-\cite{Ravichandran}. Shumskiy and Parshin point out the difference
-between GPUs architectures and its impact on performance of triangle
-collision algorithms \cite{Shumskiy}, which is a critical part of a
-raytracer, adding complexity when trying to optimize the code.
+\cite{Ravichandran}. Shumskiy and Parshin write about the difference
+between GPUs architectures and its impact on the performance of
+ray-triangle intersection algorithms \cite{Shumskiy}, which is a
+critical part of a raytracer, adding complexity when trying to
+optimize the code.
+
+Our own implementation relies on ray-triangle intersection algorithm
+developed by Möller %TODO: moller name is lacking a character,
+                    %investigate later
+and Trumbore that aims to be fast by avoiding
+ray-plane intersections\cite{moller}.
 
 \section{Conclusion}
 \label{sec:conclusion}

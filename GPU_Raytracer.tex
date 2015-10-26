@@ -134,6 +134,33 @@ developed by Möller %TODO: moller name is lacking a character,
 and Trumbore that aims to be fast by avoiding
 ray-plane intersections\cite{moller}.
 
+\section{Methodology}
+\label{sec:methodology}
+
+We developed a GPU raytracer using the OpenCL architecture called
+\emph{RenderGirl} licensed under GPL. Our work is entirely free
+software since it's inception, aiming to be useful to architects
+interested in using their GPU hardware for rendering models. We try not
+to pose any restriction on the use of the software regarding its host
+program, so anyone can implement their own interfaces.
+
+Most part of the code is written using C++, with small portions
+written in Python and OpenCL C. Daily work on the code was done on the
+GitHub page of the project\cite{RenderGirl}. Tools used in the
+development include Visual Studio for project files and compilation
+under Windows, Git for source control, CMake for cross platform
+building. GCC and Clang were used as compilers under Unix platforms.
+
+The host program of RenderGirl is Blender, which provides all the base
+functionality of a 3D software suite. RenderGirl connects with Blender
+through its Python API and implements a \emph{RenderEngine}
+interface. The host software performs all communication with the final
+user through its own GUI.
+
+The software can also run as an standalone executable file through its
+command-line interface. This interface has minimum dependencies and
+does not output any file, just reports if the rendering was successful.
+
 \section{Conclusion}
 \label{sec:conclusion}
 

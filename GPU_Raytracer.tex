@@ -159,7 +159,13 @@ user through its own GUI.
 
 The software can also run as an standalone executable file through its
 command-line interface. This interface has minimum dependencies and
-does not output any file, just reports if the rendering was successful.
+does not output any file, just reporting if the rendering was successful.
+
+We don't try to implement features that are not intrinsic related with
+rendering, so RenderGirl delegates other tasks to the host program as
+much as possible. This include loading of 3D models, user interface
+interactions, image presentation and image saving. We believe this is
+most useful and optimized way to solve the task at hand.
 
 \section{Conclusion}
 \label{sec:conclusion}

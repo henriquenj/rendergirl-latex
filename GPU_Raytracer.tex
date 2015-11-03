@@ -74,6 +74,7 @@ program and focuses on the rendering tasks. Work is focused on
 modularity and portability, both of hardware and operating system. The
 first immediate target market is CGI for architecture, due to simpler
 illumination models and lightning effects used in this field.
+% TODO: add here the method of BSP once it's selected
 
 We developed a C++ application with wrappers for
 Python %TODO: do I really need a python wrapper?
@@ -111,30 +112,44 @@ Indigo and Cycles claims to run using the OpenCL architecture. Cycles
 is the only one that is free software; originally it only supported
 CUDA-capable devices, but newer versions of Blender ship with Cycles
 that works with limited features also on OpenCL, although the
-developers specifies that CUDA platform is more mature.\cite{Cycles}
+developers specifies that CUDA platform is more mature \cite{Cycles}.
 Also Cycles takes a different approach for device abstraction by
 performing \emph{platform abstraction} by issuing commands to a common
 \emph{device interface} that can redirect function calls to CUDA,
-OpenCL, CPU or network; although the latter is still
-experimental. \cite{CyclesDevel}. Our work delegate the device
-abstraction entirely to OpenCL.
+OpenCL, CPU or network; although the latter is still experimental
+\cite{CyclesDevel}. Our work delegate the device abstraction entirely
+to OpenCL.
 
-Recent related work on the computing literature includes: Widmer and
-% TODO: should I mention somehow that I copied the abstract
-% description of those guys?
-colleagues proposes efficient acceleration structure for real-time
-screen space raytracing \cite{Widmer}. Ravichandran proposes a
-parallel divide and conquer raytracing suited for GPUs
-\cite{Ravichandran}. Shumskiy and Parshin write about the difference
-between GPUs architectures and its impact on the performance of
-ray-triangle intersection algorithms \cite{Shumskiy}, which is a
-critical part of a raytracer, adding complexity when trying to
-optimize the code.
+Recent related work on the computing literature includes: Áfra and
+Szirmay-Kalos propose a novel traversal algorithm for BVH that doesn't
+uses a stack, and can execute both on CPU and GPU platforms. They
+introduce the concept of \emph{bitstack}, which is an integer used in
+the place of a stack \cite{Afra}. Kalajanov and colleagues propose an
+acceleration structure using hierarchical two-level grids implemented
+in CUDA, which can eliminated problems arriving from using a single
+uniform grid for subdividing a scene. They call "teapot in a stadium
+problem", where a great amount of objects is allocated on a single
+cell of the uniform grid \cite{Kalojanov}. Ravichandran and colleagues
+proposes a parallel divide and conquer raytracing suited for
+GPUs. Divide and conquer ray tracing remove the need of creating an
+explicit aceleration structures once per frame, instead it creates an
+aproximation using bound boxes \cite{Ravichandran}. Shumskiy and
+Parshin write a comparative study of ray-triangle intersection
+algorithms, how they perform on GPU hardware and how BVH acceleration
+structures can be optimized for each one. They point out that some of
+their results differs from generation to generation of the same line
+of GPUS due to change in the micro-architecture.
+% TODO: this last sentece should go to other section, more specific
+\cite{Shumskiy}. Wong and colleagues propose an optimizatin method for
+GPU ray tracing by dividing objects into view-sets based on light and
+camera position, the BVH is then built using these views-sets, this
+way the amount of triangles on the BVH is reduced \cite{Wong}. A great
+portion of these works deal with acceleration structures for GPU
+raytracing - e.g. kd-trees, BVHs -, which indicates the complexity of
+these structures on GPU hardware.
 
 Our own implementation relies on ray-triangle intersection algorithm
-developed by Möller %TODO: moller name is lacking a character,
-                    %investigate later
-and Trumbore that aims to be fast by avoiding
+developed by Möller and Trumbore that aims to be fast by avoiding
 ray-plane intersections\cite{moller}.
 
 \section{Methodology}

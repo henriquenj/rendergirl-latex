@@ -45,8 +45,19 @@
 
 \begin{abstract}
 
-  In this paper we describe the implementation of a modular raytracer
-  renderer suitable for running inside the OpenCL architecture.
+  In this paper we describe the implementation of a modular
+  plug-in-based raytracer renderer called \emph{RenderGirl} suitable
+  for running inside the OpenCL framework. RenderGirl is split between
+  two main portions: Core and Interface, where Core portions provides
+  the bulk of raytracing operations and manages the communication with
+  OpenCL; and interfaces provides communication with a given
+  host program. In order to validate the plugin architecture, we
+  implemented an interface using Blender as host program. The initial
+  target market for this software is architects interested in using
+  GPUs and other OpenCL-compatible hardware for model
+  visualization. Accelerations structures were used to increase the
+  robustness of the renderer and decrease rendering times.
+  % TODO: add details about which accelerations structures
 \end{abstract}
 
 %% The ``\keywordlist'' command prints out the keywords.

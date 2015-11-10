@@ -66,14 +66,17 @@
 
 \section{Introduction}
 
-Platforms for general purpose computing using GPUs started when NVIDIA
-released its GPGPU platform called CUDA, which is capable of running
-only on NVIDIA hardware. OpenCL was born sometime later using the
-label \emph{heteregenous computing}, in order to specifies that the
-platform was supported by many kinds of hardware and computers
-processors, including CPUs and non-NVIDIA GPUs, which could be
-implemented by any vendor interested in developing hardware focused on
-parallel computation.
+Platforms for general purpose computing using GPUs started when
+NVIDIA\footnote{NVIDIA website \url{http://www.nvidia.com/}} released
+its GPGPU platform called CUDA\footnote{CUDA homepage
+ \url{http://www.nvidia.com/object/cuda_home_new.html}}, which is
+capable of running only on NVIDIA hardware. OpenCL\footnote{OpenCL on
+ Khronos Group website \url{https://www.khronos.org/opencl/}} was
+born sometime later using the label \emph{heteregenous computing}, in
+order to specifies that the platform was supported by many kinds of
+hardware and computers processors, including CPUs and non-NVIDIA GPUs,
+which could be implemented by any vendor interested in developing
+hardware focused on parallel computation.
 
 Within this context, this work aims to provide a modular plugin-based
 raytracer software that takes advantage of the parallel capabilities
@@ -94,7 +97,7 @@ plugin architecture. The code has only portable system calls and
 OpenCL function calls. In order to guarantee compilation on multiples
 compilers, CMake was used as build system. Development happens on
 GitHub, which contains the code, issue tracker and
-documentation\cite{RenderGirl}.
+documentation.
 
 Intrinsic problems that arrives with GPU raytracing includes the cost
 of synchronizing and stoping working threads, poor branch prediction,
@@ -167,15 +170,16 @@ ray-plane intersections\cite{moller}.
 \label{sec:methodology}
 
 We developed a GPU raytracer using the OpenCL framework called
-\emph{RenderGirl} licensed under LGPL. Our work aims to be useful to
-architects interested in using their GPU hardware for rendering
-models. We try not to pose any restriction on the use of the software
-regarding its host program, so anyone can implement their own
-interfaces.
+\emph{RenderGirl}\footnote{RenderGirl project page
+\url{https://github.com/henriquenj/rendergirl}} licensed under
+LGPL. Our work aims to be useful to architects interested in using
+their GPU hardware for rendering models. We try not to pose any
+restriction on the use of the software regarding its host program, so
+anyone can implement their own interfaces.
 
 Most part of the code is written using C++, with small portions
 written in Python and OpenCL C. Daily work on the code was done on the
-GitHub page of the project\cite{RenderGirl}. Tools used in the
+GitHub page of the project. Tools used in the
 development include Visual Studio for project files and compilation
 under Windows, Git for source control, CMake for cross platform
 building. GCC and Clang were used as compilers under Unix platforms.

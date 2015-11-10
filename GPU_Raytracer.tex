@@ -200,6 +200,47 @@ much as possible. This include loading of 3D models, user interface
 interactions, image presentation and image saving. We believe this is
 most useful and optimized way to solve the problem at hand.
 
+\section{Proposal}
+
+In this section we describe the initial proposal of implementation.
+
+\subsection{Architecture}
+
+% log subsystem, OpenCL work-item models, acceleration structures
+
+\subsection{Development Schedule}
+
+Development progress is managed with a scrum-like method using the
+Rally Community Software\footnote{Rally Community Edition
+ \url{https://rallydev.com/}}. The schedule is divided among
+\emph{releases} which are subdivided into \emph{iterations} of two
+weeks each. Work is then split into \emph{user stories}, each of them
+having a given pontuation, decided at planning phase (usually when the
+US is created), each point roughly represents one hour of work. With
+this system we aim to properly distribute the workload within the
+timeframe we have for the development of the project, and to
+prioritize the tasks we deem more important.
+
+Below there's a table of the timeframe of each release, and the main
+features we aim to support at a given point.
+
+% TODO: break these table lines if possible
+\begin{tabular}{ | l | l | l | p{8cm} |}
+  \hline
+  Release & Start date & Release date & Major features \\ \hline
+  Final Project 1 B & 2015-10-18 & 2015-12-07 & (1)Theoretical base for the raytracer, with clearly defined goals and
+                                                general scope of the project. (2)Definition of a method of binary
+                                                space partitioning. (3)Definition of a method of anti-aliasing.
+                                                (4)Early work on the Blender plugin, with communication between C++ and Python. \\ \hline
+  Final Project 2 A & 2015-12-13 & 2016-04-30 & (1)Working software with the features proposed (BSP, anti-aliasing, blender plugin interface).
+                                                (2)Updated scope with what was discarded and what was added \\ \hline
+  Final Project 2 B & 2016-05-02 & 2016-06-19 & (1)The working software in some stable form (a release branch or tag). (2)Bug fixes.
+                                                (3)The documentation for the final user. Including an update version of
+                                                the current articles on github page of the project. (4)Results of the work,
+                                                with comparative studies and performance gains (rendering performance gains).
+                                                (5)The final draft of this article. \\ \hline
+\end{tabular}
+
 \section{Conclusion}
 \label{sec:conclusion}
 

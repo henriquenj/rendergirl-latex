@@ -206,7 +206,66 @@ In this section we describe the initial proposal of implementation.
 
 \subsection{Architecture}
 
-% log subsystem, OpenCL work-item models, acceleration structures
+RenderGirl is composed of a \emph{core} that communicates with a given
+\emph{interface}, which is depicted at image 1 . Each of these
+components have a specific set of tasks inside the program.
+
+The core portion is a static library that provides an API for
+receiving the 3D scene structure - vertices, triangles, objects,
+cameras and lights - and OpenCL device selection. It performs all the
+communication between OpenCL and the interfaces, handling its
+context. The output of render function is an array of pixels with the
+rendered frame. It also provides the Log Subsytem dedicated to log
+operations. The core is designed to only have syncronous calls, so
+each function call will block the program - including the rendering
+function which can takes several minutes to complete.
+
+% TODO: mention singleton nature of core
+
+The interfaces can be anything from executables to dynamic libraries,
+depending on the plugin interface provided by the host 3D
+program. Interfaces link with the core at compile time and translate
+all the requests from host program. They can pick individual features
+to support, and a given interface may support only a subset of
+features of the core. Three interfaces are provided as examples, they
+are:
+
+\begin{itemize}
+\item \emph{Console interface}: The simplest interface. It links with the
+  core and compiles as an executable. Only provides options for OBJ
+  loader and does not output any image file. It's useful for porting
+  the Core for other platforms and make sure it's working.
+\item \emph{wxWidgets interface}: compiles as an standalone
+  application with a GUI for loading OBJ files and render models,
+  using the wxWidgets\footnote{http://wxwidgets.org/} toolkit. The
+  user can choose atributes of the scene like camera position and
+  color of light source. It's likely to be superseeded by the Blender
+  plugin interface due to the amount of dependencies it carries.
+\item \emph{Blender Plugin}: the Blender plugin is the interface we
+  provide as reference design to other interfaces for RenderGirl.
+\end{itemize}
+
+Since every host program will provided different asyncronous APIs for
+its plugin system in a different manner (or not provide it at all) we
+don't want to impose an asyncronous model at this stage of
+development, leaving it for the interfaces to implement their
+own. Since concurreny model on the rendering portion is handled by
+OpenCL, the only feature we lost by not exposing asyncronous APIs in
+the core is real-time preview. As a initial design decition to ease
+portability, the core contains no system-dependent calls apart from
+OpenCL itself.
+
+% TODO: fit SceneManager somewhere
+
+\subsubsection{OpenCL scheduling model}
+
+\subsubsection{Blender Plugin}
+% TODO: blender plugin general architecutre with swig process and
+% python API
+
+\subsubsection{Log subsystem}
+
+
 
 \subsection{Development Schedule}
 

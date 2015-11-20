@@ -216,9 +216,9 @@ cameras and lights - and OpenCL device selection. It performs all the
 communication between OpenCL and the interfaces, handling its
 context. The output of render function is an array of pixels with the
 rendered frame. It also provides the Log Subsytem dedicated to log
-operations. The core is designed to only have syncronous calls, so
-each function call will block the program - including the rendering
-function which can takes several minutes to complete.
+operations. Most of the interactions with the raytracer occurs using
+a shared object called \emph{RenderGirlShared}, which is implemented
+as a shared singleton.
 
 % TODO: mention singleton nature of core
 
@@ -231,33 +231,37 @@ features of the core. Three interfaces are provided as examples, they
 are:
 
 \begin{itemize}
-\item \emph{Console interface}: The simplest interface. It links with the
-  core and compiles as an executable. Only provides options for OBJ
-  loader and does not output any image file. It's useful for porting
-  the Core for other platforms and make sure it's working.
+\item \emph{Console interface}: The simplest interface. It links with
+  the core and compiles as an executable. It only provides options for
+  OBJ loader and does not output any image file. It's useful for
+  porting the Core for other platforms and make sure it's working.
 \item \emph{wxWidgets interface}: compiles as an standalone
   application with a GUI for loading OBJ files and render models,
   using the wxWidgets\footnote{http://wxwidgets.org/} toolkit. The
-  user can choose atributes of the scene like camera position and
-  color of light source. It's likely to be superseeded by the Blender
-  plugin interface due to the amount of dependencies it carries.
+  user can choose atributes of the scene like camera position, color
+  of light source and the output image format. It's likely to be
+  deprecated over the Blender plugin interface due to the amount of
+  dependencies it carries.
 \item \emph{Blender Plugin}: the Blender plugin is the interface we
   provide as reference design to other interfaces for RenderGirl.
 \end{itemize}
 
-Since every host program will provided different asyncronous APIs for
-its plugin system in a different manner (or not provide it at all) we
-don't want to impose an asyncronous model at this stage of
-development, leaving it for the interfaces to implement their
-own. Since concurreny model on the rendering portion is handled by
-OpenCL, the only feature we lost by not exposing asyncronous APIs in
-the core is real-time preview. As a initial design decition to ease
-portability, the core contains no system-dependent calls apart from
-OpenCL itself.
+The core is designed to only have syncronous calls, so each function
+call will block the program - including the rendering function which
+can takes several minutes to complete. Since every host program will
+provided different asyncronous APIs for its plugin system in a
+different manner (or not provide it at all) we don't want to impose an
+asyncronous model at this stage of development, leaving it for the
+interfaces to implement their own. Since concurreny model on the
+rendering portion is handled by OpenCL, the only feature we lost by
+not exposing asyncronous APIs in the core is real-time preview. As a
+initial design decition to ease portability, the core contains no
+system-dependent calls apart from OpenCL itself.
 
-% TODO: fit SceneManager somewhere
 
 \subsubsection{OpenCL scheduling model}
+
+% TODO: fit SceneManager somewhere
 
 \subsubsection{Blender Plugin}
 % TODO: blender plugin general architecutre with swig process and
@@ -265,7 +269,27 @@ OpenCL itself.
 
 \subsubsection{Log subsystem}
 
+The log susbsytem provides an API for programs interested in capturing
+logs from the core. A simple log output such as \emph{stdout} and
+\emph{stderr} is not enough because it does not provide the choice of
+the output method, which is dependent on the host program. We provide
+a solution using a combination of the observer and singleton patterns.
 
+From the core perspective, the log is a singleton which can be called
+at any point of the raytracer, with no knowledge of the destination of
+the message. It provides two functions: message and error. Message can
+be used by any message treated as a normal operation of the raytracer,
+such as information about state of devices, OpenCL execution and
+rendering times. Error is used for logging erros, including OpenCL C
+syntax errors, which are compiled at run-time and are hardware
+dependent.
+
+From the perspective of the interfaces, each of them need to implement
+a \emph{LogListener} interface which provides the callbacks for
+receiving the messages. Each listener object register with the log
+subsystem, which will keep a list of listeners and will forward the
+messages to all the objects on the list. The interface can then
+capture the messages and print it to the user.
 
 \subsection{Development Schedule}
 

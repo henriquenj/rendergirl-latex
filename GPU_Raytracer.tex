@@ -209,8 +209,8 @@ In this section we describe the initial proposal of implementation.
 \subsection{Architecture}
 
 RenderGirl is composed of a \emph{core} that communicates with a given
-\emph{interface}, which is depicted at image 1 . Each of these
-components have a specific set of tasks inside the program.
+\emph{interface}. The overall architecture is depicted at figure~\ref{fig:architecture}. Each of these components have a specific set
+of tasks inside the program.
 
 The core portion is a static library that provides an API for
 receiving the 3D scene structure - vertices, triangles, objects,
@@ -261,7 +261,13 @@ the core is real-time preview. As a initial design decition to ease
 portability, the core contains no system-dependent calls apart from
 OpenCL itself.
 
+\begin{figure}
+\centering
 \input{architecture_overview.tex}
+\caption{Architecture of RenderGirl. In red core componenets, in
+  orange interface components.}
+\label{fig:architecture}
+\end{figure}
 
 \subsubsection{OpenCL scheduling model}
 

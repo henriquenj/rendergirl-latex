@@ -4,6 +4,8 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{tikz}
+
 
 %% use this for zero \parindent and non-zero \parskip, intelligently.
 \usepackage{parskip}
@@ -246,18 +248,20 @@ are:
   provide as reference design to other interfaces for RenderGirl.
 \end{itemize}
 
-The core is designed to only have syncronous calls, so each function
-call will block the program - including the rendering function which
-can takes several minutes to complete. Since every host program will
-provided different asyncronous APIs for its plugin system in a
-different manner (or not provide it at all) we don't want to impose an
-asyncronous model at this stage of development, leaving it for the
-interfaces to implement their own. Since concurreny model on the
-rendering portion is handled by OpenCL, the only feature we lost by
-not exposing asyncronous APIs in the core is real-time preview. As a
-initial design decition to ease portability, the core contains no
-system-dependent calls apart from OpenCL itself.
+Regarding flow control, the core is designed to only have syncronous
+calls, so each function call will block the program - including the
+rendering function which can takes several minutes to complete. Since
+every host program will provided different asyncronous APIs for its
+plugin system in a different manner (or not provide it at all) we
+don't want to impose an asyncronous model at this stage of
+development, leaving it for the interfaces to implement their
+own. Since concurreny model on the rendering portion is handled by
+OpenCL, the only feature we lost by not exposing asyncronous APIs in
+the core is real-time preview. As a initial design decition to ease
+portability, the core contains no system-dependent calls apart from
+OpenCL itself.
 
+\input{architecture_overview.tex}
 
 \subsubsection{OpenCL scheduling model}
 

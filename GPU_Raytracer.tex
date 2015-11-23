@@ -95,7 +95,7 @@ first immediate target market is CGI for architecture, due to simpler
 illumination models and lightning effects used in this field.
 % TODO: add here the method of BSP once it's selected
 
-We developed a C++ application with wrappers for
+We propose a C++ application with wrappers for
 Python %TODO: do I really need a python wrapper?
 and C++ and a reference plugin for Blender, used to validate the
 plugin architecture. The code has only portable system calls and
@@ -358,6 +358,44 @@ subsystem, which will keep a list of listeners and will forward the
 messages to all the objects on the list. The interface can then
 capture the messages and print it to the user.
 
+\subsection{Early results}
+\label{sec:conclusion}
+
+Results so far use the brute force approach for rendering, without
+performing any partioning of the data. That means that we can manage
+to have high paralelism, but a lot of the processing is wasted doing
+ray-triangle intersection on triangles that will never be facing the
+camera.
+
+Figure ~\ref{fig:result1} shows a result on a model of a whale using a
+GPU.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.8\linewidth]{render.png}
+  \caption{Whale model rendered with RenderGirl. 2802 triangles.
+    512x512 pixels. 0.421879 seconds. Device used: GeForce GT 650M. FXAA
+    off.}
+ \label{fig:result1}
+\end{figure}
+
+The Core has two interfaces: the wxWidgets interface and the command
+line interface. They both work with the same APIs form the core and
+are capable of running the raytracer. The wxWidgets interface offers a
+GUI which the user can select parameters of the rendering, such as
+light color, resolution of the image, several image formats for saving
+and options for enable FXAA.
+
+We current have a limitation of only accepting scenes using the OBJ
+format, which the core itself will load. In order to be properly
+rendered, the model must contains only triangles, otherwise the
+software will ignore extra vertices on a face. The Blender plugin
+interface aims to reduce the Core responsibilities on this aspect, by
+using the already mature infrastructure of Blender for loading and
+editing scenes.
+
+Execution for now is restricted to Windows.
+
 \subsection{Development Schedule}
 
 Development progress is managed with a scrum-like method using the
@@ -371,11 +409,11 @@ this system we aim to properly distribute the workload within the
 timeframe we have for the development of the project, and to
 prioritize the tasks we deem more important.
 
-Below there's a table of the timeframe of each release, and the main
-features we aim to support at a given point.
+The following table provides the timeframe of each release, and the
+main features we aim to support at a given point.
 
 % TODO: break these table lines if possible
-\begin{tabular}{ | l | l | l | p{8cm} |}
+\begin{tabular}{ | p{.8cm} | p{1cm} | p{1cm} | p{4cm} |}
   \hline
   Release & Start date & Release date & Major features \\ \hline
   Final Project 1 B & 2015-10-18 & 2015-12-07 & (1)Theoretical base for the raytracer, with clearly defined goals and
@@ -387,14 +425,11 @@ features we aim to support at a given point.
   Final Project 2 B & 2016-05-02 & 2016-06-19 & (1)The working software in some stable form (a release branch or tag). (2)Bug fixes.
                                                 (3)The documentation for the final user. Including an update version of
                                                 the current articles on github page of the project. (4)Results of the work,
-                                                with comparative studies and performance gains (rendering performance gains).
+                                                with comparative studies and rendergin performance gains.
                                                 (5)The final draft of this article. \\ \hline
 \end{tabular}
 
-\section{Early results}
-\label{sec:conclusion}
-
-\section*{Acknowledgments}
+% \section*{Acknowledgments}
 
 
 \bibliographystyle{sbgames}

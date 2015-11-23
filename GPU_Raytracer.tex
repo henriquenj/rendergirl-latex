@@ -5,6 +5,9 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{tikz}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{pifont}
 
 
 %% use this for zero \parindent and non-zero \parskip, intelligently.
@@ -218,11 +221,14 @@ cameras and lights - and OpenCL device selection. It performs all the
 communication between OpenCL and the interfaces, handling its
 context. The output of render function is an array of pixels with the
 rendered frame. It also provides the Log Subsytem dedicated to log
-operations. Most of the interactions with the raytracer occurs using
-a shared object called \emph{RenderGirlShared}, which is implemented
-as a shared singleton.
+operations. Most of the interactions with the raytracer occurs using a
+shared object called \emph{RenderGirlShared}, which is implemented as
+a shared singleton. Scene structures are managed by a singleton called
+\emph{SceneManager}, providing an API for setting up a scene using
+RenderGirl data structures; it's also responsible by subdivinding the
+scene into BVH structures and make it suitable for OpenCL memory
+models.
 
-% TODO: mention singleton nature of core
 
 The interfaces can be anything from executables to dynamic libraries,
 depending on the plugin interface provided by the host 3D
@@ -264,16 +270,67 @@ OpenCL itself.
 \begin{figure}
 \centering
 \input{architecture_overview.tex}
-\caption{Architecture of RenderGirl. In red core componenets, in
-  orange interface components.}
+\caption{Architecture of RenderGirl. Red represents core componenets,
+  orange represents interface components.}
 \label{fig:architecture}
 \end{figure}
 
 \subsubsection{OpenCL scheduling model}
 
-% TODO: fit SceneManager somewhere
+OpenCL dispatch each execution of the raytracer by running a piece of
+code called \emph{kernel}. Each kernel runs once inside a
+\emph{work-item} which belongs to a \emph{work-group}. The exact
+nature of the execution will be hardware dependent - e.g. a work-iten
+can become thread -, we assume that each work-iten can work
+independently with no knowledge of other work-itens, and therefore the
+kernels do not perform any syncronization.
 
-\subsubsection{Blender Plugin}
+We launch one work-item executing one kernel per pixel of the
+image. Each kernel will then build a ray based on pixel location
+within the image to be tested for collision against all triangles of
+the scene. This approach works well in parallel because does not
+require any syncronization among work-itens, and hence it's well
+suited for GPUs. By contrast, it's also very inefficient because it
+does not perform any heuristic and will brute-force test collision
+with all triangles for every pixel on the image.
+
+With BVH, we aim to reduce the amount of work per pixel and test
+collision of rays with only a subset of triangles. The SceneManager is
+responsible for organizing the objects of the scene into the BVH
+structure prior the rendering, by analizing bounding boxes and the
+distribuition of objects. We don' plan to build the BVH inside
+OpenCL. The Algorithm~\ref{alg:rendering} provides a pseudo code
+with this process.
+
+\begin{algorithm}
+\caption{Rendering exectuion}
+\label{alg:rendering}
+\begin{algorithmic}[1]
+\Procedure{Host preparation}{}
+\State Build BVH for the entire scene
+\State Dispatch BVH structures to OpenCL device
+\EndProcedure
+\Procedure{OpenCL execution}{}
+\For{each work-iten running inside the OpenCL device}
+\State Build ray $r$ from pixel coordinates
+\For{each top-level BVH $b$}
+\If{$r$ collide with $b$}
+\Return $b$
+\EndIf
+\EndFor
+\State Fetch triangle list $T$ on $b$
+\For{each triangle $t$ \Pisymbol{psy}{206} $T$}
+\If { $r$ collides with $t$}
+\State {Fetch material of $t$}
+\State {Paint pixel according to material}
+\EndIf
+\EndFor
+\EndFor
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+% \subsubsection{Blender Plugin}
 % TODO: blender plugin general architecutre with swig process and
 % python API
 

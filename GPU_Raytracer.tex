@@ -89,10 +89,7 @@ of modern GPUs while maintaing hardware agnosticism by using the
 portability OpenCL provides to hardware vendors and developers. By
 being modular, it's also capable of running inside larger 3D suites
 such as Blender, this way we can delegate other tasks to the host 3D
-program and focuses on the rendering tasks. Work is focused on
-modularity and portability, both of hardware and operating system. The
-first immediate target market is CGI for architecture, due to simpler
-illumination models and lightning effects used in this field.
+program and focuses on the rendering tasks.
 % TODO: add here the method of BSP once it's selected
 
 We propose a C++ application with wrappers for
@@ -111,14 +108,6 @@ bus used between GPU and main memory (usually PCI Express) and the
 broad variety of GPUs and OpenCL capable hardware, which can generate
 different results on different setups.
 % TODO add benefits of programming using GPUs, start with "by contrast"
-
-While this software is intended to work on all hardware capable of
-running OpenCL, we tried to focus on GPUs, so optimization for this
-type of processor received preference. It's also worth noting that
-this work does not have real-time constraints and it is designed to be
-used as an \emph{offline} raytracing, so image quality is more
-important than rendering times.
-
 \section{Related Work}
 \label{sec:related-work}
 
@@ -167,9 +156,24 @@ portion of these works deal with acceleration structures for GPU
 raytracing - e.g. kd-trees, BVHs -, which indicates the complexity of
 these structures on GPU hardware.
 
+\subsection{Contextualization}
+
 Our own implementation relies on ray-triangle intersection algorithm
 developed by Möller and Trumbore that aims to be fast by avoiding
 ray-plane intersections\cite{moller}.
+
+While the software is intended to work on all hardware capable of
+running OpenCL, we tried to focus on GPUs, so optimization for this
+type of processor received preference. It's also worth noting that
+this work does not have real-time constraints and it is designed to be
+used as an \emph{offline} raytracing, so image quality is more
+important than rendering times.
+
+Our work differs from the previously mentioned publications by
+focusing on modularity and portability, both of hardware and operating
+system. The first immediate target market is CGI for architecture, due
+to simpler illumination models and lightning effects used in this
+field.
 
 \section{Methodology}
 \label{sec:methodology}
@@ -395,6 +399,12 @@ using the already mature infrastructure of Blender for loading and
 editing scenes.
 
 Execution for now is restricted to Windows.
+
+With this work, we aim to offer more options for developers of 3D
+modeling programas that want to incorporate a GPU raytracer into their
+softwares without writing one from scratch. To the best of our
+knowledge there's no free software available with the same design
+goals.
 
 \subsection{Development Schedule}
 

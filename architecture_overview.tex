@@ -83,14 +83,14 @@ host_node/.style={
 \node[core_node] (log) {Log subsystem};
 \node[core_node, right=of log] (scene) {Scene Manager};
 \node[core_node, right=of scene] (shared) {RenderGirl shared};
-\widernode{log}{scene}{OpenCl wrapper}{wrapper};
+\widernode{log}{scene}{OpenCL wrapper}{wrapper};
 \node[core_node, below=of shared] (kernels) {Kernels};
 
 % interface
 
 \node[interface_node, above=of scene](wrapper_host){Host structures};
 \node[interface_node, above=of log](listeners){Log Listeners};
-\node[interface_node, above=of shared](flow){Flow control};
+\node[interface_node, above=of shared](flow){Sync/Async APIs};
 
 \begin{pgfonlayer}{core}
 \draw[core_node,draw=black,fill=black_red!40]

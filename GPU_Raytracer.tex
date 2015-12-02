@@ -258,18 +258,17 @@ are:
   provide as reference design to other interfaces for RenderGirl.
 \end{itemize}
 
-Regarding flow control, the core is designed to only have syncronous
-calls, so each function call will block the program - including the
-rendering function which can takes several minutes to complete. Since
-every host program will provided different asyncronous APIs for its
-plugin system in a different manner (or not provide it at all) we
-don't want to impose an asyncronous model at this stage of
-development, leaving it for the interfaces to implement their
-own. Since concurreny model on the rendering portion is handled by
-OpenCL, the only feature we lost by not exposing asyncronous APIs in
-the core is real-time preview. As a initial design decition to ease
-portability, the core contains no system-dependent calls apart from
-OpenCL itself.
+The core API is designed to only have syncronous calls, so each
+function call will block the program - including the rendering
+function which can takes several minutes to complete. Every host
+program will provided different asyncronous APIs for its plugin system
+in a different manner (or not provide it at all) so we don't want to
+impose an asyncronous model at this stage of development, leaving it
+for the interfaces to implement their own. Since concurreny model on
+the rendering portion is handled by OpenCL, the only feature we lost
+by not exposing asyncronous APIs in the core is real-time preview. As
+a initial design decition to ease portability, the core contains no
+system-dependent calls apart from OpenCL itself.
 
 \begin{figure}
 \centering
@@ -348,12 +347,12 @@ a solution using a combination of the observer and singleton patterns.
 
 From the core perspective, the log is a singleton which can be called
 at any point of the raytracer, with no knowledge of the destination of
-the message. It provides two functions: message and error. Message can
-be used by any message treated as a normal operation of the raytracer,
-such as information about state of devices, OpenCL execution and
-rendering times. Error is used for logging erros, including OpenCL C
-syntax errors, which are compiled at run-time and are hardware
-dependent.
+the message. It provides two functions: \emph{message} and
+\emph{error}. \emph{Message} can be used by any message treated as a normal
+operation of the raytracer, such as information about state of
+devices, OpenCL execution and rendering times. \emph{Error} is used for
+logging erros, including OpenCL C syntax errors, which are generated at
+run-time by the driver's compiler.
 
 From the perspective of the interfaces, each of them need to implement
 a \emph{LogListener} interface which provides the callbacks for

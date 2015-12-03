@@ -90,7 +90,7 @@ portability OpenCL provides to hardware vendors and developers. By
 being modular, it's also capable of running inside larger 3D suites
 such as Blender, this way we can delegate other tasks to the host 3D
 program and focuses on the rendering tasks.
-% TODO: add here the method of BSP once it's selected
+% TODO: add here the method of BVH once it's selected
 
 We propose a C++ application with wrappers for
 Python %TODO: do I really need a python wrapper?
@@ -114,19 +114,17 @@ different results on different setups.
 Applications that provides GPU rendering capabilities for
 non-interactive graphics include Blender Cycles\cite{Cycles} , Octane
 render \cite{Octane}, V-Ray renderer \cite{VRAY}, Redshift
-\cite{Redshift} and Indigo renderer \cite{Indigo}.
-
-Indigo and Cycles claims to run using the OpenCL framework. Cycles
-is the only one that is free software; originally it only supported
-CUDA-capable devices, but newer versions of Blender ship with Cycles
-that works with limited features also on OpenCL, although the
-developers specifies that CUDA platform is more mature \cite{Cycles}.
-Also Cycles takes a different approach for device abstraction by
-performing \emph{platform abstraction} by issuing commands to a common
-\emph{device interface} that can redirect function calls to CUDA,
-OpenCL, CPU or network; although the latter is still experimental
-\cite{CyclesDevel}. Our work delegate the device abstraction entirely
-to OpenCL.
+\cite{Redshift} and Indigo renderer \cite{Indigo}. Indigo and Cycles
+claims to run using the OpenCL framework. Cycles is the only one that
+is free software; originally it only supported CUDA-capable devices,
+but newer versions of Blender ship with Cycles that works with limited
+features also on OpenCL, although the developers specifies that CUDA
+platform is more mature \cite{Cycles}.  Also Cycles takes a different
+approach for device abstraction by performing \emph{platform
+  abstraction} by issuing commands to a common \emph{device interface}
+that can redirect function calls to CUDA, OpenCL, CPU or network;
+although the latter is still experimental \cite{CyclesDevel}. Our work
+delegate the device abstraction entirely to OpenCL.
 
 Recent related work on the computing literature includes: Áfra and
 Szirmay-Kalos propose a novel traversal algorithm for BVH that doesn't
@@ -429,7 +427,7 @@ main features we aim to support at a given point.
                                                 general scope of the project. (2)Definition of a method of binary
                                                 space partitioning. (3)Definition of a method of anti-aliasing.
                                                 (4)Early work on the Blender plugin, with communication between C++ and Python. \\ \hline
-  Final Project 2 A & 2015-12-13 & 2016-04-30 & (1)Working software with the features proposed (BSP, anti-aliasing, blender plugin interface).
+  Final Project 2 A & 2015-12-13 & 2016-04-30 & (1)Working software with the features proposed (BVH, anti-aliasing, blender plugin interface).
                                                 (2)Updated scope with what was discarded and what was added \\ \hline
   Final Project 2 B & 2016-05-02 & 2016-06-19 & (1)The working software in some stable form (a release branch or tag). (2)Bug fixes.
                                                 (3)The documentation for the final user. Including an update version of

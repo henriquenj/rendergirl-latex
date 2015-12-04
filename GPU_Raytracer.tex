@@ -108,6 +108,19 @@ bus used between GPU and main memory (usually PCI Express) and the
 broad variety of GPUs and OpenCL capable hardware, which can generate
 different results on different setups.
 % TODO add benefits of programming using GPUs, start with "by contrast"
+% TODO find source for this
+
+There are several acceleration structures for increase the efficiency
+of rendering, which are called \emph{spatial data structures}. Some of
+these structures are \emph{bounding volume hierarchies} (BVH),
+\emph{binary space partioning}, trees, quadtrees and octrees. They
+hierarchically subdived a scene so the queries for the objects become
+faster \cite{akenine-moller:2008}. Non real-time renderers do not have
+these constraints and therefore can employ expensive algorithms,
+generating images of higher quality, while taking advantage of the
+spatial structures in order to speed up operations. This is the case
+for our work.
+
 \section{Related Work}
 \label{sec:related-work}
 

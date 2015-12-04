@@ -162,10 +162,13 @@ of GPUS due to change in the micro-architecture.
 \cite{Shumskiy}. Wong and colleagues propose an optimizatin method for
 GPU ray tracing by dividing objects into view-sets based on light and
 camera position, the BVH is then built using these views-sets, this
-way the amount of triangles on the BVH is reduced \cite{Wong}. A great
-portion of these works deal with acceleration structures for GPU
-raytracing - e.g. kd-trees, BVHs -, which indicates the complexity of
-these structures on GPU hardware.
+way the amount of triangles on the BVH is reduced \cite{Wong}. Widmer
+and colleagues proposes efficient acceleration structure for real-time
+screen space raytracing, they use an hybrid data structure combining
+BVH and local planar approximation \cite{Widmer}. A great portion of
+these works deal with acceleration structures for GPU raytracing -
+e.g. kd-trees, BVHs -, which indicates the complexity of these
+structures on GPU hardware.
 
 \subsection{Contextualization}
 

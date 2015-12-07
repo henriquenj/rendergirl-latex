@@ -149,6 +149,16 @@ OpenCL, CPU or network; although the latter is still experimental
   \url{http://wiki.blender.org/index.php/Dev:2.6/Source/Render/Cycles/Devices}}. Our
 work delegate the device abstraction entirely to OpenCL.
 
+NVIDIA developed a framework called NVIDIA OptiX \footnote{OptiX
+  website \url{https://developer.nvidia.com/optix}} which is intended
+to be a general purpose ray tracing engine designed for NVIDIA GPUs
+and other many-core architectures. It can be used for a variety of
+tracing-based algorithms, and also on domains beyond computer graphics
+such as sound propagation, collision-detection and artificial
+intelligence. They aim to provide a set of programmable operations for
+implementing ray tracing operations, in a pipeline model comparable
+with OpenGL and Direct3D \cite{Parker:2010:OGP:1778765.1778803}.
+
 Recent related work on the computing literature includes: Áfra and
 Szirmay-Kalos propose a novel traversal algorithm for BVH that doesn't
 uses a stack, and can execute both on CPU and GPU platforms. They
@@ -179,6 +189,7 @@ BVH and local planar approximation \cite{Widmer}. A great portion of
 these works deal with acceleration structures for GPU raytracing -
 e.g. kd-trees, BVHs -, which indicates the complexity of these
 structures on GPU hardware.
+
 
 \subsection{Contextualization}
 

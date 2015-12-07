@@ -125,19 +125,29 @@ operations. This is the case for our work.
 \label{sec:related-work}
 
 Applications that provides GPU rendering capabilities for
-non-interactive graphics include Blender Cycles\cite{Cycles} , Octane
-render \cite{Octane}, V-Ray renderer \cite{VRAY}, Redshift
-\cite{Redshift} and Indigo renderer \cite{Indigo}. Indigo and Cycles
-claims to run using the OpenCL framework. Cycles is the only one that
-is free software; originally it only supported CUDA-capable devices,
-but newer versions of Blender ship with Cycles that works with limited
-features also on OpenCL, although the developers specifies that CUDA
-platform is more mature \cite{Cycles}.  Also Cycles takes a different
-approach for device abstraction by performing \emph{platform
-  abstraction} by issuing commands to a common \emph{device interface}
-that can redirect function calls to CUDA, OpenCL, CPU or network;
-although the latter is still experimental \cite{CyclesDevel}. Our work
-delegate the device abstraction entirely to OpenCL.
+non-interactive graphics include Blender Cycles\footnote{Cycles
+  website \url{http://www.blender.org/manual/render/cycles/}} , Octane
+render \footnote{Octane website
+  \url{https://home.otoy.com/render/octane-render/}}, V-Ray renderer
+\footnote{VRAY website
+  \url{http://www.chaosgroup.com/en/2/vray.html}}, Redshift
+\footnote{Redshift website
+  \url{https://www.redshift3d.com/products/redshift}} and Indigo
+renderer \footnote{Indigo website
+  \url{http://www.indigorenderer.com/}}. Indigo and Cycles claims to
+run using the OpenCL framework. Cycles is the only one that is free
+software; originally it only supported CUDA-capable devices, but newer
+versions of Blender ship with Cycles that works with limited features
+also on OpenCL, although the developers specifies that CUDA platform
+is more mature \footnote{Cycles GPU rendering page
+  \url{http://www.blender.org/manual/render/cycles/gpu_rendering.html}}.
+Also Cycles takes a different approach for device abstraction by
+performing \emph{platform abstraction} by issuing commands to a common
+\emph{device interface} that can redirect function calls to CUDA,
+OpenCL, CPU or network; although the latter is still experimental
+\footnote{Blender Cycles Developer Documentation
+  \url{http://wiki.blender.org/index.php/Dev:2.6/Source/Render/Cycles/Devices}}. Our
+work delegate the device abstraction entirely to OpenCL.
 
 Recent related work on the computing literature includes: Áfra and
 Szirmay-Kalos propose a novel traversal algorithm for BVH that doesn't

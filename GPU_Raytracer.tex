@@ -115,11 +115,11 @@ of rendering, which are called \emph{spatial data structures}. Some of
 these structures are \emph{bounding volume hierarchies} (BVH),
 \emph{binary space partioning}, trees, quadtrees and octrees. They
 hierarchically subdived a scene so the queries for the objects become
-faster \cite{akenine-moller:2008}. Non real-time renderers do not have
-these constraints and therefore can employ expensive algorithms,
-generating images of higher quality, while taking advantage of the
-spatial structures in order to speed up operations. This is the case
-for our work.
+faster \cite[Chapter~14]{akenine-moller:2008}. Non real-time renderers
+do not have these constraints and therefore can employ expensive
+algorithms, generating images of higher quality, while taking
+advantage of the spatial structures in order to speed up
+operations. This is the case for our work.
 
 \section{Related Work}
 \label{sec:related-work}
@@ -435,7 +435,6 @@ prioritize the tasks we deem more important.
 The following table provides the timeframe of each release, and the
 main features we aim to support at a given point.
 
-% TODO: break these table lines if possible
 \begin{tabular}{ | p{.8cm} | p{1cm} | p{1cm} | p{4cm} |}
   \hline
   Release & Start date & Release date & Major features \\ \hline

@@ -54,9 +54,9 @@
   plug-in-based raytracer renderer called \emph{RenderGirl} suitable
   for running inside the OpenCL framework. RenderGirl is split between
   two main portions: Core and Interface, where Core portions provides
-  the bulk of raytracing operations and manages the communication with
-  OpenCL; and interfaces provides communication with a given
-  host program. In order to validate the plugin architecture, we
+  the bulk of ray-tracing operations and manages the communication
+  with OpenCL; and interfaces provides communication with a given host
+  program. In order to validate the plugin architecture, we
   implemented an interface using Blender as host program. The initial
   target market for this software is architects interested in using
   GPUs and other OpenCL-compatible hardware for model
@@ -77,7 +77,7 @@ its GPGPU platform called CUDA\footnote{CUDA homepage
  \url{http://www.nvidia.com/object/cuda_home_new.html}}, which is
 capable of running only on NVIDIA hardware. OpenCL\footnote{OpenCL on
  Khronos Group website \url{https://www.khronos.org/opencl/}} was
-born sometime later using the label \emph{heteregenous computing}, in
+born sometime later using the label \emph{heterogeneous computing}, in
 order to specifies that the platform was supported by many kinds of
 hardware and computers processors, including CPUs and non-NVIDIA GPUs,
 which could be implemented by any vendor interested in developing
@@ -85,7 +85,7 @@ hardware focused on parallel computation.
 
 Within this context, this work aims to provide a modular plugin-based
 raytracer software that takes advantage of the parallel capabilities
-of modern GPUs while maintaing hardware agnosticism by using the
+of modern GPUs while maintaining hardware agnosticism by using the
 portability OpenCL provides to hardware vendors and developers. By
 being modular, it's also capable of running inside larger 3D suites
 such as Blender, this way we can delegate other tasks to the host 3D
@@ -101,8 +101,8 @@ compilers, CMake was used as build system. Development happens on
 GitHub, which contains the code, issue tracker and
 documentation.
 
-Intrinsic problems that arrives with GPU raytracing includes the cost
-of synchronizing and stoping working threads, poor branch prediction,
+Intrinsic problems that arrives with GPU ray tracing includes the cost
+of synchronizing and stopping working threads, poor branch prediction,
 high latency of different OpenCL memory models, high latency on the
 bus used between GPU and main memory (usually PCI Express) and the
 broad variety of GPUs and OpenCL capable hardware, which can generate
@@ -113,8 +113,8 @@ different results on different setups.
 There are several acceleration structures for increase the efficiency
 of rendering, which are called \emph{spatial data structures}. Some of
 these structures are \emph{bounding volume hierarchies} (BVH),
-\emph{binary space partioning}, trees, quadtrees and octrees. They
-hierarchically subdived a scene so the queries for the objects become
+\emph{binary space partitioning}, trees, quad-trees and octrees. They
+hierarchically subdivided a scene so the queries for the objects become
 faster \cite[Chapter~14.1]{akenine-moller:2008}. Non real-time renderers
 do not have these constraints and therefore can employ expensive
 algorithms, generating images of higher quality, while taking
@@ -125,12 +125,12 @@ Our contributions include:
 
 \begin{itemize}
   \item A renderer independent of a given 3D software.
-  \item A ray tracer designed to take advantage of parallel
+  \item A raytracer designed to take advantage of parallel
     computation capabilities of modern GPUs and other OpenCL-capable
     devices.
-  \item A modular architecture with replacable components that
+  \item A modular architecture with replaceable components that
     communicates with a known interface.
-  \item Usage of aceleration structures suitable for storing scene
+  \item Usage of acceleration structures suitable for storing scene
     information inside OpenCL architecture.
 
 \end{itemize}
@@ -185,15 +185,15 @@ problem", where a great amount of objects is allocated on a single
 cell of the uniform grid \cite{Kalojanov}. Ravichandran and colleagues
 proposes a parallel divide and conquer raytracing suited for
 GPUs. Divide and conquer ray tracing remove the need of creating an
-explicit aceleration structures once per frame, instead it creates an
-aproximation using bound boxes \cite{Ravichandran}. Shumskiy and
+explicit acceleration structures once per frame, instead it creates an
+approximation using bound boxes \cite{Ravichandran}. Shumskiy and
 Parshin write a comparative study of ray-triangle intersection
 algorithms, how they perform on GPU hardware and how BVH acceleration
 structures can be optimized for each one. They point out that some of
 their results differs from generation to generation of the same line
 of GPUS due to change in the micro-architecture.
 % TODO: this last sentece should go to other section, more specific
-\cite{Shumskiy}. Wong and colleagues propose an optimizatin method for
+\cite{Shumskiy}. Wong and colleagues propose an optimization method for
 GPU ray tracing by dividing objects into view-sets based on light and
 camera position, the BVH is then built using these views-sets, this
 way the amount of triangles on the BVH is reduced \cite{Wong}. Widmer
@@ -273,12 +273,12 @@ receiving the 3D scene structure - vertices, triangles, objects,
 cameras and lights - and OpenCL device selection. It performs all the
 communication between OpenCL and the interfaces, handling its
 context. The output of render function is an array of pixels with the
-rendered frame. It also provides the Log Subsytem dedicated to log
+rendered frame. It also provides the Log Subsystem dedicated to log
 operations. Most of the interactions with the raytracer occurs using a
 shared object called \emph{RenderGirlShared}, which is implemented as
 a shared singleton. Scene structures are managed by a singleton called
 \emph{SceneManager}, providing an API for setting up a scene using
-RenderGirl data structures; it's also responsible by subdivinding the
+RenderGirl data structures; it's also responsible by subdividing the
 scene into BVH structures and make it suitable for OpenCL memory
 models.
 
@@ -299,7 +299,7 @@ are:
 \item \emph{wxWidgets interface}: compiles as an standalone
   application with a GUI for loading OBJ files and render models,
   using the wxWidgets\footnote{http://wxwidgets.org/} toolkit. The
-  user can choose atributes of the scene like camera position, color
+  user can choose attributes of the scene like camera position, color
   of light source and the output image format. It's likely to be
   deprecated over the Blender plugin interface due to the amount of
   dependencies it carries.
@@ -307,22 +307,22 @@ are:
   provide as reference design to other interfaces for RenderGirl.
 \end{itemize}
 
-The core API is designed to only have syncronous calls, so each
+The core API is designed to only have synchronous calls, so each
 function call will block the program - including the rendering
 function which can takes several minutes to complete. Every host
-program will provided different asyncronous APIs for its plugin system
-in a different manner (or not provide it at all) so we don't want to
-impose an asyncronous model at this stage of development, leaving it
-for the interfaces to implement their own. Since concurreny model on
-the rendering portion is handled by OpenCL, the only feature we lost
-by not exposing asyncronous APIs in the core is real-time preview. As
-a initial design decition to ease portability, the core contains no
-system-dependent calls apart from OpenCL itself.
+program will provided different asynchronous APIs for its plugin
+system in a different manner (or not provide it at all) so we don't
+want to impose an asynchronous model at this stage of development,
+leaving it for the interfaces to implement their own. Since
+concurrency model on the rendering portion is handled by OpenCL, the
+only feature we lost by not exposing asynchronous APIs in the core is
+real-time preview. As a initial design decision to ease portability,
+the core contains no system-dependent calls apart from OpenCL itself.
 
 \begin{figure}
 \centering
 \input{architecture_overview.tex}
-\caption{Architecture of RenderGirl. Red represents core componenets,
+\caption{Architecture of RenderGirl. Red represents core components,
   orange represents interface components.}
 \label{fig:architecture}
 \end{figure}
@@ -342,16 +342,16 @@ problems if this can increase the image quality.
 OpenCL dispatch each execution of the raytracer by running a piece of
 code called \emph{kernel}. Each kernel runs once inside a
 \emph{work-item} which belongs to a \emph{work-group}. The exact
-nature of the execution will be hardware dependent - e.g. a work-iten
-can become thread -, we assume that each work-iten can work
-independently with no knowledge of other work-itens, and therefore the
-kernels do not perform any syncronization.
+nature of the execution will be hardware dependent - e.g. a work-item
+can become thread -, we assume that each work-item can work
+independently with no knowledge of other work-items, and therefore the
+kernels do not perform any synchronization.
 
 We launch one work-item executing one kernel per pixel of the
 image. Each kernel will then build a ray based on pixel location
 within the image to be tested for collision against all triangles of
 the scene. This approach works well in parallel because does not
-require any syncronization among work-itens, and hence it's well
+require any synchronization among work-items, and hence it's well
 suited for GPUs. By contrast, it's also very inefficient because it
 does not perform any heuristic and will brute-force test collision
 with all triangles for every pixel on the image.
@@ -359,13 +359,13 @@ with all triangles for every pixel on the image.
 With BVH, we aim to reduce the amount of work per pixel and test
 collision of rays with only a subset of triangles. The SceneManager is
 responsible for organizing the objects of the scene into the BVH
-structure prior the rendering, by analizing bounding boxes and the
-distribuition of objects. We don' plan to build the BVH inside
+structure prior the rendering, by analyzing bounding boxes and the
+distribution of objects. We don' plan to build the BVH inside
 OpenCL. The Algorithm~\ref{alg:rendering} provides a pseudo code
 with this process.
 
 \begin{algorithm}
-\caption{Rendering exectuion}
+\caption{Rendering execution}
 \label{alg:rendering}
 \begin{algorithmic}[1]
 \Procedure{Host preparation}{}
@@ -373,7 +373,7 @@ with this process.
 \State Dispatch BVH structures to OpenCL device
 \EndProcedure
 \Procedure{OpenCL execution}{}
-\For{each work-iten running inside the OpenCL device}
+\For{each work-item running inside the OpenCL device}
 \State Build ray $r$ from pixel coordinates
 \For{each top-level BVH $b$}
 \If{$r$ collide with $b$}
@@ -398,7 +398,7 @@ with this process.
 
 \subsubsection{Log subsystem}
 
-The log susbsytem provides an API for programs interested in capturing
+The log subsystem provides an API for programs interested in capturing
 logs from the core. A simple log output such as \emph{stdout} and
 \emph{stderr} is not enough because it does not provide the choice of
 the output method, which is dependent on the host program. We provide
@@ -410,7 +410,7 @@ the message. It provides two functions: \emph{message} and
 \emph{error}. \emph{Message} can be used by any message treated as a normal
 operation of the raytracer, such as information about state of
 devices, OpenCL execution and rendering times. \emph{Error} is used for
-logging erros, including OpenCL C syntax errors, which are generated at
+logging errors, including OpenCL C syntax errors, which are generated at
 run-time by the driver's compiler.
 
 From the perspective of the interfaces, each of them need to implement
@@ -424,8 +424,8 @@ capture the messages and print it to the user.
 \label{sec:conclusion}
 
 Results so far use the brute force approach for rendering, without
-performing any partioning of the data. That means that we can manage
-to have high paralelism, but a lot of the processing is wasted doing
+performing any partitioning of the data. That means that we can manage
+to have high parallelism, but a lot of the processing is wasted doing
 ray-triangle intersection on triangles that will never be facing the
 camera.
 
@@ -459,8 +459,8 @@ editing scenes.
 Execution for now is restricted to Windows.
 
 With this work, we aim to offer more options for developers of 3D
-modeling programas that want to incorporate a GPU raytracer into their
-softwares without writing one from scratch. To the best of our
+modeling programs that want to incorporate a GPU raytracer into their
+software without writing one from scratch. To the best of our
 knowledge there's no free software available with the same design
 goals.
 
@@ -468,14 +468,14 @@ goals.
 
 Development progress is managed with a scrum-like method using the
 Rally Community Software\footnote{Rally Community Edition
- \url{https://rallydev.com/}}. The schedule is divided among
+  \url{https://rallydev.com/}}. The schedule is divided among
 \emph{releases} which are subdivided into \emph{iterations} of two
 weeks each. Work is then split into \emph{user stories}, each of them
-having a given pontuation, decided at planning phase (usually when the
-US is created), each point roughly represents one hour of work. With
-this system we aim to properly distribute the workload within the
-timeframe we have for the development of the project, and to
-prioritize the tasks we deem more important.
+having a given amount of points, decided at planning phase (usually
+when the US is created), each point roughly represents one hour of
+work. With this system we aim to properly distribute the workload
+within the timeframe we have for the development of the project, and
+to prioritize the tasks we deem more important.
 
 The following table provides the timeframe of each release, and the
 main features we aim to support at a given point.
@@ -492,11 +492,11 @@ main features we aim to support at a given point.
   Final Project 2 B & 2016-05-02 & 2016-06-19 & (1)The working software in some stable form (a release branch or tag). (2)Bug fixes.
                                                 (3)The documentation for the final user. Including an update version of
                                                 the current articles on github page of the project. (4)Results of the work,
-                                                with comparative studies and rendergin performance gains.
+                                                with comparative studies and rendering performance gains.
                                                 (5)The final draft of this article. \\ \hline
 \end{tabular}
 
-Itens 4 and 2 of the first release were pushed to the next release due
+Items 4 and 2 of the first release were pushed to the next release due
 to time constraints.
 
 \section{Future work}
@@ -506,7 +506,7 @@ On the following months we will improve the software by implementing
 two main features: BVH partitioning and the Blender Plugin interface.
 The BVH partitioning is intended to speed up ray tracing operation and
 avoid expensive brute force collision testes on all triangles on a
-scene for each ray. Some of the basic infraestructure for scene
+scene for each ray. Some of the basic infrastructure for scene
 management is already done, such as the SceneManager class.  The
 Blender plugin will be developed to validate the overall architecture
 and to see how well the Core performs within a real host software

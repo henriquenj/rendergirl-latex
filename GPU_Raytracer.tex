@@ -21,9 +21,8 @@
 %% Paper title.
 \title{A modular GPU raytracer using OpenCL for non-interactive graphics}
 
-%% Author and Affiliation (multiple authors). Use: and between authors
-
 \author{Henrique Nunes Jung\\ Univesidade do Vale do Rio dos Sinos
+        \and Vinicius Jurinic Cassol\\ Universidade do Vale do Rio dos Sinos
 }
 \contactinfo{\{henriquenj\}@gmail.com
 }
@@ -427,9 +426,7 @@ Results so far use the brute force approach for rendering, without
 performing any partitioning of the data. That means that we can manage
 to have high parallelism, but a lot of the processing is wasted doing
 ray-triangle intersection on triangles that will never be facing the
-camera.
-
-Figure ~\ref{fig:result1} shows a result on a model of a whale using a
+camera. Figure ~\ref{fig:result1} shows a result on a model of a whale using a
 GPU.
 
 \begin{figure}
@@ -454,9 +451,7 @@ rendered, the model must contains only triangles, otherwise the
 software will ignore extra vertices on a face. The Blender plugin
 interface aims to reduce the Core responsibilities on this aspect, by
 using the already mature infrastructure of Blender for loading and
-editing scenes.
-
-Execution for now is restricted to Windows.
+editing scenes. Execution for now is restricted to Windows.
 
 With this work, we aim to offer more options for developers of 3D
 modeling programs that want to incorporate a GPU raytracer into their

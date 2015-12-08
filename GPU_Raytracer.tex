@@ -472,6 +472,24 @@ main features we aim to support at a given point.
                                                 (5)The final draft of this article. \\ \hline
 \end{tabular}
 
+Itens 4 and 2 of the first release were pushed to the next release due
+to time constraints.
+
+\section{Future work}
+\label{sec:future}
+
+On the following months we will improve the software by implementing
+two main features: BVH partitioning and the Blender Plugin interface.
+The BVH partitioning is intended to speed up ray tracing operation and
+avoid expensive brute force collision testes on all triangles on a
+scene for each ray. Some of the basic infraestructure for scene
+management is already done, such as the SceneManager class.  The
+Blender plugin will be developed to validate the overall architecture
+and to see how well the Core performs within a real host software
+(currently only console and wxWidgets interface are available). Some
+other minor features include the implementation of the anti-alias
+method using FSAA and the cross compilation using CMake.
+
 % \section*{Acknowledgments}
 
 

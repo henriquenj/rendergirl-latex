@@ -12,7 +12,7 @@ rm GPU_Raytracer.dvi
 rm GPU_Raytracer.log
 rm GPU_Raytracer.pdf
 
-pdflatex GPU_Raytracer
-bibtex GPU_Raytracer
-pdflatex GPU_Raytracer
+pdflatex GPU_Raytracer &&
+bibtex GPU_Raytracer &&
+pdflatex GPU_Raytracer &&
 pdflatex GPU_Raytracer

@@ -115,7 +115,7 @@ of rendering, which are called \emph{spatial data structures}. Some of
 these structures are \emph{bounding volume hierarchies} (BVH),
 \emph{binary space partioning}, trees, quadtrees and octrees. They
 hierarchically subdived a scene so the queries for the objects become
-faster \cite[Chapter~14]{akenine-moller:2008}. Non real-time renderers
+faster \cite[Chapter~14.1]{akenine-moller:2008}. Non real-time renderers
 do not have these constraints and therefore can employ expensive
 algorithms, generating images of higher quality, while taking
 advantage of the spatial structures in order to speed up
@@ -312,6 +312,16 @@ system-dependent calls apart from OpenCL itself.
   orange represents interface components.}
 \label{fig:architecture}
 \end{figure}
+
+
+Our approach for anti-alias will use the \emph{full-scene
+  antialiasing} (FSAA) method. Anti-alias is useful to reduce
+distortion artifacts generated on objects' borders. FSAA renders the
+scene at a higher resolution and then reduces the image back to its
+original size, combining two or more pixels to form an average pixel
+\cite[Chapter~5.6]{akenine-moller:2008}. Since RenderGirl is an
+offline renderer, we prefer to employ expensive solutions to rendering
+problems if this can increase the image quality.
 
 \subsubsection{OpenCL scheduling model}
 

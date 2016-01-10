@@ -395,6 +395,24 @@ with this process.
 % TODO: blender plugin general architecutre with swig process and
 % python API
 
+\subsubsection{Acceleration structures}
+
+As previously mentioned, acceleration structures are commonly used on
+ray tracing in order to avoid expensive and inefficient brute-force
+ray-triangle intersection tests for the entire scene. With these
+structures, using a given ray, we can query for only a subset of
+triangles and perform the intersection tests on them.
+% TODO: expand as soon I have the implementation working
+
+Thrane and Simonsen conduct a study comparing three different
+acceleration structures and their implementation on GPUs: BVHs,
+kd-trees and uniform grids. On their experiments, they concluded that
+BVH outperform the other two except for a few cases, citing the
+simpler nature of the traversal code with minimal branching as the
+likely responsible for the good results \cite{Thrane}. After careful
+consideration of their results, we choose BVH for our own
+implementation.
+
 \subsubsection{Log subsystem}
 
 The log subsystem provides an API for programs interested in capturing

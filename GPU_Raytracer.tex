@@ -435,46 +435,6 @@ subsystem, which will keep a list of listeners and will forward the
 messages to all the objects on the list. The interface can then
 capture the messages and print it to the user.
 
-\subsection{Early results}
-\label{sec:conclusion}
-
-Results so far use the brute force approach for rendering, without
-performing any partitioning of the data. That means that we can manage
-to have high parallelism, but a lot of the processing is wasted doing
-ray-triangle intersection on triangles that will never be facing the
-camera. Figure ~\ref{fig:result1} shows a result on a model of a whale using a
-GPU.
-
-\begin{figure}
-  \centering
-  \includegraphics[width=0.8\linewidth]{render.png}
-  \caption{Whale model rendered with RenderGirl. 2802 triangles.
-    512x512 pixels. 0.421879 seconds. Device used: GeForce GT 650M. FXAA
-    off.}
- \label{fig:result1}
-\end{figure}
-
-The Core has two interfaces: the wxWidgets interface and the command
-line interface. They both work with the same APIs form the core and
-are capable of running the raytracer. The wxWidgets interface offers a
-GUI which the user can select parameters of the rendering, such as
-light color, resolution of the image, several image formats for saving
-and options for enable FXAA.
-
-We current have a limitation of only accepting scenes using the OBJ
-format, which the core itself will load. In order to be properly
-rendered, the model must contains only triangles, otherwise the
-software will ignore extra vertices on a face. The Blender plugin
-interface aims to reduce the Core responsibilities on this aspect, by
-using the already mature infrastructure of Blender for loading and
-editing scenes. Execution for now is restricted to Windows.
-
-With this work, we aim to offer more options for developers of 3D
-modeling programs that want to incorporate a GPU raytracer into their
-software without writing one from scratch. To the best of our
-knowledge there's no free software available with the same design
-goals.
-
 \subsection{Development Schedule}
 
 Development progress is managed with a scrum-like method using the
@@ -509,6 +469,15 @@ main features we aim to support at a given point.
 
 Items 4 and 2 of the first release were pushed to the next release due
 to time constraints.
+
+\section{Conclusions}
+\label{sec:conclusion}
+
+With this work, we aim to offer more options for developers of 3D
+modeling programs that want to incorporate a GPU raytracer into their
+software without writing one from scratch. To the best of our
+knowledge there's no free software available with the same design
+goals.
 
 \section{Future work}
 \label{sec:future}

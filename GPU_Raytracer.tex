@@ -318,15 +318,6 @@ the core contains no system-dependent calls apart from OpenCL itself.
 \end{figure}
 
 
-Our approach for anti-alias will use the \emph{full-scene
-  antialiasing} (FSAA) method. Anti-alias is useful to reduce
-distortion artifacts generated on objects' borders. FSAA renders the
-scene at a higher resolution and then reduces the image back to its
-original size, combining two or more pixels to form an average pixel
-\cite[Chapter~5.6]{akenine-moller:2008}. Since RenderGirl is an
-offline renderer, we prefer to employ expensive solutions to rendering
-problems if this can increase the image quality.
-
 \subsection{OpenCL scheduling model}
 
 OpenCL dispatch each execution of the raytracer by running a piece of
@@ -388,7 +379,7 @@ with this process.
 
 \subsection{Acceleration structures}
 
-As previously mentioned, acceleration structures are commonly used on
+Acceleration structures are commonly used on
 ray tracing in order to avoid expensive and inefficient brute-force
 ray-triangle intersection tests for the entire scene. With these
 structures, using a given ray, we can query for only a subset of

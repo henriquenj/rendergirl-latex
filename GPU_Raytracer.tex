@@ -337,48 +337,11 @@ kernels do not perform any synchronization.
 
 We launch one work-item executing one kernel per pixel of the
 image. Each kernel will then build a ray based on pixel location
-within the image to be tested for collision against all triangles of
-the scene. This approach works well in parallel because does not
-require any synchronization among work-items, and hence it's well
-suited for GPUs. By contrast, it's also very inefficient because it
-does not perform any heuristic and will brute-force test collision
-with all triangles for every pixel on the image.
-
-With BVH, we aim to reduce the amount of work per pixel and test
-collision of rays with only a subset of triangles. The SceneManager is
-responsible for organizing the objects of the scene into the BVH
-structure prior the rendering, by analyzing bounding boxes and the
-distribution of objects. We don' plan to build the BVH inside
-OpenCL. The Algorithm~\ref{alg:rendering} provides a pseudo code
-with this process.
-
-\begin{algorithm}
-\caption{Rendering execution}
-\label{alg:rendering}
-\begin{algorithmic}[1]
-\Procedure{Host preparation}{}
-\State Build BVH for the entire scene
-\State Dispatch BVH structures to OpenCL device
-\EndProcedure
-\Procedure{OpenCL execution}{}
-\For{each work-item running inside the OpenCL device}
-\State Build ray $r$ from pixel coordinates
-\For{each top-level BVH $b$}
-\If{$r$ collide with $b$}
-\Return $b$
-\EndIf
-\EndFor
-\State Fetch triangle list $T$ from $b$
-\For{each triangle $t$ \Pisymbol{psy}{206} $T$}
-\If { $r$ collides with $t$}
-\State {Fetch material of $t$}
-\State {Paint pixel according to material}
-\EndIf
-\EndFor
-\EndFor
-\EndProcedure
-\end{algorithmic}
-\end{algorithm}
+within the image to be tested for collision against the BVH structure,
+where each ray may reach a leaf node, which in that case it must test
+against all the geometry of that object. This approach works well in
+parallel because does not require any synchronization among
+work-items, and hence it's well suited for GPUs.
 
 % \subsection{Blender Plugin}
 % TODO: blender plugin general architecutre with swig process and

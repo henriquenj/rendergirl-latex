@@ -217,9 +217,7 @@ important than rendering times.
 
 Our work differs from the previously mentioned publications by
 focusing on modularity and portability, both of hardware and operating
-system. The first immediate target market is CGI for architecture, due
-to simpler illumination models and lightning effects used in this
-field.
+system.
 
 \section{Methodology}
 \label{sec:methodology}
@@ -233,11 +231,9 @@ restriction on the use of the software regarding its host program, so
 anyone can implement their own interfaces.
 
 Most part of the code is written using C++, with small portions
-written in Python and OpenCL C. Daily work on the code was done on the
-GitHub page of the project. Tools used in the
-development include Visual Studio for project files and compilation
-under Windows, Git for source control, CMake for cross platform
-building. GCC and Clang were used as compilers under Unix platforms.
+written in Python and OpenCL C. Tools used in the development include
+Visual Studio for project files and compilation under Windows, Git for
+source control.
 
 The host program of RenderGirl is Blender, which provides all the base
 functionality of a 3D software suite. RenderGirl connects with Blender
@@ -255,11 +251,8 @@ much as possible. This include loading of 3D models, user interface
 interactions, image presentation and image saving. We believe this is
 most useful and optimized way to solve the problem at hand.
 
-\section{Proposal}
-
-In this section we describe the initial proposal of implementation.
-
-\subsection{Architecture}
+\section{Architecture}
+\label{sec:architecture}
 
 RenderGirl is composed of a \emph{core} that communicates with a given
 \emph{interface}. The overall architecture is depicted at figure~\ref{fig:architecture}. Each of these components have a specific set
@@ -334,7 +327,7 @@ original size, combining two or more pixels to form an average pixel
 offline renderer, we prefer to employ expensive solutions to rendering
 problems if this can increase the image quality.
 
-\subsubsection{OpenCL scheduling model}
+\subsection{OpenCL scheduling model}
 
 OpenCL dispatch each execution of the raytracer by running a piece of
 code called \emph{kernel}. Each kernel runs once inside a
@@ -389,11 +382,11 @@ with this process.
 \end{algorithmic}
 \end{algorithm}
 
-% \subsubsection{Blender Plugin}
+% \subsection{Blender Plugin}
 % TODO: blender plugin general architecutre with swig process and
 % python API
 
-\subsubsection{Acceleration structures}
+\subsection{Acceleration structures}
 
 As previously mentioned, acceleration structures are commonly used on
 ray tracing in order to avoid expensive and inefficient brute-force
@@ -411,7 +404,7 @@ likely responsible for the good results \cite{Thrane}. After careful
 consideration of their results, we choose BVH for our own
 implementation.
 
-\subsubsection{Log subsystem}
+\subsection{Log subsystem}
 
 The log subsystem provides an API for programs interested in capturing
 logs from the core. A simple log output such as \emph{stdout} and
@@ -435,40 +428,6 @@ subsystem, which will keep a list of listeners and will forward the
 messages to all the objects on the list. The interface can then
 capture the messages and print it to the user.
 
-\subsection{Development Schedule}
-
-Development progress is managed with a scrum-like method using the
-Rally Community Software\footnote{Rally Community Edition
-  \url{https://rallydev.com/}}. The schedule is divided among
-\emph{releases} which are subdivided into \emph{iterations} of two
-weeks each. Work is then split into \emph{user stories}, each of them
-having a given amount of points, decided at planning phase (usually
-when the US is created), each point roughly represents one hour of
-work. With this system we aim to properly distribute the workload
-within the timeframe we have for the development of the project, and
-to prioritize the tasks we deem more important.
-
-The following table provides the timeframe of each release, and the
-main features we aim to support at a given point.
-
-\begin{tabular}{ | p{.8cm} | p{1cm} | p{1cm} | p{4cm} |}
-  \hline
-  Release & Start date & Release date & Major features \\ \hline
-  Final Project 1 B & 2015-10-18 & 2015-12-07 & (1)Theoretical base for the raytracer, with clearly defined goals and
-                                                general scope of the project. (2)Definition of a method of binary
-                                                space partitioning. (3)Definition of a method of anti-aliasing.
-                                                (4)Early work on the Blender plugin, with communication between C++ and Python. \\ \hline
-  Final Project 2 A & 2015-12-13 & 2016-04-30 & (1)Working software with the features proposed (BVH, anti-aliasing, blender plugin interface).
-                                                (2)Updated scope with what was discarded and what was added \\ \hline
-  Final Project 2 B & 2016-05-02 & 2016-06-19 & (1)The working software in some stable form (a release branch or tag). (2)Bug fixes.
-                                                (3)The documentation for the final user. Including an update version of
-                                                the current articles on github page of the project. (4)Results of the work,
-                                                with comparative studies and rendering performance gains.
-                                                (5)The final draft of this article. \\ \hline
-\end{tabular}
-
-Items 4 and 2 of the first release were pushed to the next release due
-to time constraints.
 
 \section{Conclusions}
 \label{sec:conclusion}
@@ -482,17 +441,6 @@ goals.
 \section{Future work}
 \label{sec:future}
 
-On the following months we will improve the software by implementing
-two main features: BVH partitioning and the Blender Plugin interface.
-The BVH partitioning is intended to speed up ray tracing operation and
-avoid expensive brute force collision testes on all triangles on a
-scene for each ray. Some of the basic infrastructure for scene
-management is already done, such as the SceneManager class.  The
-Blender plugin will be developed to validate the overall architecture
-and to see how well the Core performs within a real host software
-(currently only console and wxWidgets interface are available). Some
-other minor features include the implementation of the anti-alias
-method using FSAA and the cross compilation using CMake.
 
 % \section*{Acknowledgments}
 

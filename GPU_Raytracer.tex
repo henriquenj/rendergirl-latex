@@ -10,6 +10,11 @@
 \usepackage{algpseudocode}
 \usepackage{pifont}
 
+\usepackage{tree-dvips}
+\usepackage{qtree}
+\usepackage{etoolbox}
+
+
 
 % If submitting a paper to a conference for review with a double
 % blind reviewing process, replace the value ``0'' below with your
@@ -472,6 +477,15 @@ states and hit records. This approach is probably due to memory
 contraints at the time the implementation was done. Our rendering
 happens by enqueeing a single OpenCL kernel only once, and the control
 does not goes back to the CPU until the frame is formed.
+
+\begin{figure}
+\centering
+\input{bvh.tex}
+
+\caption{Organization of the BVH within the traversal array}
+\label{fig:bvh}
+\end{figure}
+
 
 \subsection{Log subsystem}
 

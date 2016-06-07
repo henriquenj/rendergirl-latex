@@ -1,0 +1,15 @@
+\newrobustcmd*{\square}[1]{\tikz{\filldraw[draw=#1,fill=#1] (0,0)
+rectangle (0.2cm,0.2cm);}}
+
+\newrobustcmd*{\mycircle}[1]{\tikz{\filldraw[draw=#1,fill=#1] (0,0) circle [radius=0.1cm];}}
+
+\newrobustcmd*{\mytriangle}[1]{\tikz{\filldraw[draw=#1,fill=#1] (0,0) --
+(0.2cm,0) -- (0.1cm,0.2cm);}}
+
+\Tree[.0 [.1 [.2 \mytriangle{red} ]
+               [.3 \mytriangle{red} ]]
+          [.4 [.5 \mytriangle{red} ]
+                [.6
+                [.7 \mytriangle{red} ]
+                [.8 [.9 \mytriangle{red} ]
+                [.10 \mytriangle{red} ]]]]]

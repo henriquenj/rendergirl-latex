@@ -379,21 +379,99 @@ with this process.
 
 \subsection{Acceleration structures}
 
-Acceleration structures are commonly used on
-ray tracing in order to avoid expensive and inefficient brute-force
-ray-triangle intersection tests for the entire scene. With these
-structures, using a given ray, we can query for only a subset of
-triangles and perform the intersection tests on them.
-% TODO: expand as soon I have the implementation working
+Acceleration structures are commonly used on ray tracing in order to
+avoid expensive and inefficient brute-force ray-triangle intersection
+tests for the entire scene. With these structures, using a given ray,
+we can query for only a subset of triangles and perform the
+intersection tests on them.
 
 Thrane and Simonsen conduct a study comparing three different
-acceleration structures and their implementation on GPUs: BVHs,
-kd-trees and uniform grids. On their experiments, they concluded that
-BVH outperform the other two except for a few cases, citing the
-simpler nature of the traversal code with minimal branching as the
-likely responsible for the good results \cite{Thrane}. After careful
-consideration of their results, we choose BVH for our own
-implementation.
+acceleration structures and their implementation on GPUs: bounding
+volume hierarchies, kd-trees and uniform grids. On their experiments,
+they concluded that BVH outperform the other two except for a few
+cases, citing the simpler nature of the traversal code with minimal
+branching as the likely responsible for the good results
+\cite{Thrane}. After careful consideration of their results, we choose
+BVH for our own implementation.
+
+The process of using aceleration structures is usually divided in two
+steps: \emph{construction} and \emph{traversal}. The BVH was
+originally proposed by Kay and Kajiya\cite{kay1986ray}, they describes
+a CPU only implementation using convex hulls as bounding volumes for
+each level of the tree.
+
+For our BVH in GPU, the \emph{construction} portion is roughtly the
+same as described by Kay and Kajiya. The BVH is built as a binary tree
+where at each level objects are sorted by their absolute position
+either in X or Y axis, the collection of objects is then split into
+half, composing the two childs of that node. The axis used for
+ordering are swapped at each level of the tree in a attempt to make a
+fair distribuition of objects. This process of ordering and division
+repeats until the collection of objects is reduced to one, making it a
+leaf node, which then contains all the geometry of that particular
+object. The major difference between our approach is that we use
+\emph{axis-aligned bouding boxes}(AABB) as bouding volumes instead of
+convex hulls, since the traversal code is less complex, although with
+a much less tightly fit bouding bolume. Thrane and Simonsen mention
+that there's a great penalty of running complicated code on the
+GPU\cite{Thrane}. Every node holds an AABB fitting all the geometry of
+its child nodes, so a ray must only test a collision against the AABB,
+if the collision fails, the algorithm can discart that sub-tree and
+resume processing on the next sister node. If the program reaches a
+leaf node, then the ray must be tested against all the geometry of
+that object within the leaf node. All the construction phase happens
+on the CPU.
+
+On the \emph{traversal} step, we implemented the traversal algorithm
+described by Thrane and Simonsen in their master thesis. The main
+problem to be solved here is overcome the lack of stack on GPU
+hardware, since tree traversal algorithms are usually implemented
+using recursion. The key difference from traditional CPU
+implementations is that we build a fixed-order \emph{traversal array}
+on the CPU and only iterate over it, so we never transmit the tree to
+the OpenCL device and rather the iteration itself. The traversal array
+already contains the nodes we must intersect in the corret order. The
+BVH node on the traversal array have three properties: the AABB that
+fits all that node downwards, the \emph{escape index} and a index that
+points to an object in the global list of objects. The object index is
+only valid on child nodes, and it's flagged as -1 when on a middle
+node. The escape index represents the index where the traversal should
+resume if the current node's AABB fail to intersect with the ray. This
+can be visualized on figure XXX. The traversal is done in a top botton
+left to right. The algorithm for traversal is detailed on Algorithm~
+\ref{alg:bvh-traversal}.
+
+
+\begin{algorithm}
+\caption{BVH traversal on OpenCL device}
+\label{alg:bvh-traversal}
+\begin{algorithmic}[1]
+\State Given a ray $r$
+\State $tarray\gets$ The traversal array
+\State $s\gets$ size of traversal array
+\State $index\gets 0$
+\While{$index < s$ }
+\State $node\gets$ element from $tarray$ at $index$
+\If{$r$ intersects with $node$'s AABB}
+\If{$node$ is a leaf node}
+\State Executes ray-triangle intersection with all triangles on this leaf node and return the nearest
+\Else
+\State $index\gets$ $index$ + 1
+\EndIf
+\Else
+\State $index\gets$ $node$'s escape index
+\EndIf
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
+
+This implementation is a little bit different than Thrane and Simonsen
+because they implemented the ray-traversal in several passes, where
+the control goes back to CPU, so they keep intermediate renderer
+states and hit records. This approach is probably due to memory
+contraints at the time the implementation was done. Our rendering
+happens by enqueeing a single OpenCL kernel only once, and the control
+does not goes back to the CPU until the frame is formed.
 
 \subsection{Log subsystem}
 
@@ -433,6 +511,9 @@ case. We used the followng test setups:
   \item A simples scene depicting a kitchen.
   \item The same scene as before but with several evenly distributed kitchens.
   \item The first scene but with different resolution sizes.
+  \item A scene with several copies of the "Suzanne" model that comes
+    with Blender. All models but one are outside the reach of the
+    camera.                     %TODO: maybe not the best sentence?
 \end{itemize}
 
 

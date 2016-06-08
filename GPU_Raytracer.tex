@@ -644,8 +644,16 @@ The BVH performed well within the scope of its ability, providing good
 speedups , even if with some known weaknesses of the aceleration
 structure. For a future development, we could implement an hybrid of
 kd-tree and BVH by partioning objects that are above a given threshold
-of triangle count. We believe the current structure server well the
-average case of a complex 3D scene.
+of triangle count, which would speed up the whale scene. Although we
+must still exercise caution on the complexity of the partioning
+scheme, since the generation of the structures are done on the CPU
+side and it's serialized, while the traversal and ray intersection
+operations takes full advantage of the OpenCL device. For instance a
+BVH that takes 3 seconds more to generate must save at least 3 seconds
+worth of processing on the device, so a solution for the worst case of
+the BVH should taken into consideration the whole context of the
+application. We believe the current structure serves well the average
+case of a complex 3D scene.
 
 The plugin architecture was validated by embedding the Core on three
 different interfaces that can make use of the same library, e.g

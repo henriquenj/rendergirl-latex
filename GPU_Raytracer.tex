@@ -14,8 +14,8 @@
 \usepackage{qtree}
 \usepackage{tikz-qtree}
 \usepackage{etoolbox}
+\usepackage{pgfplots}
 \usetikzlibrary{calc}
-
 
 
 % If submitting a paper to a conference for review with a double
@@ -34,11 +34,10 @@
 \and Vinicius Jurinic Cassol\thanks{e-mail: vjcassol@unisinos.br}}
 \affiliation{\scriptsize Universidade do Vale do Rio dos Sinos}
 
-% TODO: add a teaser image later on
-% \teaser{
-%   \includegraphics[width=2in]{paulista1891.jpg}
-%   \caption{Lookit! Lookit!}
-% }
+\teaser{
+  \includegraphics[width=2.5in]{several_kitchen.png}
+  \caption{A scene renderd by RenderGirl}
+}
 
 
 %% Abstract section.
@@ -486,31 +485,188 @@ capture the messages and print it to the user.
 \subsection{Results}
 \label{sec:results}
 
-
 We tested our raytracer implementaton by running it from Blender using
 a variaty of scene configurations. We aim to test different kinds of
 object distributions in order to test how the BVH performs on each
-case. We used the followng test setups:
-
+case. We used the followng test scenes:
 
 \begin{itemize}
-  \item A simples scene depicting a kitchen.
-  \item The same scene as before but with several evenly distributed kitchens.
-  \item The first scene but with different resolution sizes.
-  \item A scene with several copies of the "Suzanne" model that comes
-    with Blender. All models but one are outside the reach of the
-    camera.                     %TODO: maybe not the best sentence?
+\item Scene 1: A simples scene depicting a table and some kitchen objects. It
+  contains 21.424 vertices, 42,848 triangles divided into 28
+  objects. We tested using several different resolutions.
+\item Scene 2: The same scene as before but with several evenly
+  distributed tables. It contains 203.644 vertices, 405.242 triangles
+  divided into 233 objects. We tested using several different
+  resolutions.
+\item Scene 3: A scene with a single whale object containing 8.432
+  vertices and 16.764 triangles.
 \end{itemize}
 
+The figure~\ref{fig:scenes-results} shows ours results using the
+scenes described previously. All tests were executed on a GeForce GTX
+970 from NVIDIA using driver version 353.30. The OpenCL specification
+version used by this driver is 1.2.
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    title={The time of rendering for each scene},
+    xlabel={Resolution},
+    ylabel={Seconds},
+    xmin=0, xmax=2500,
+    ymin=0, ymax=4,
+    xtick={0, 500,1000,1500,2000},
+    ytick={0,1,2,3,4},
+    legend pos=north west,
+    ymajorgrids=true,
+    grid style=dashed,
+    scaled ticks=false, tick label style={/pgf/number format/fixed},
+    legend entries={Scene1, Scene2,Scene3},
+    % TODO: fix scientific notation
+    % TODO: increase size
+]
+% scene 1
+\addplot[
+    color=black,mark=* size=1.5,dashed,nodes near coords
+    ]
+    coordinates {(500,0.0624)(1000, 0.1250)(1500,0.2187)(2000,0.3743)};
+% scene 2
+\addplot[
+    color=red,mark=*,dashed,nodes near coords
+    ]
+    coordinates {(500,0.2968)(1000, 0.3750)(1500,0.5014)(2000,0.6951)};
+%scene 3
+\addplot[
+    color=blue,mark=*,dashed,nodes near coords
+    ]
+    coordinates {(500,0.2031)(1000, 0.8291)(1500,1.8753)(2000,3.2270)};
+
+\end{axis}
+\end{tikzpicture}
+\caption{Rendering time of the three scenes across diferent
+  resoltions. Pixels value represents both width and height.}
+\label{fig:scenes-results}
+\end{figure}
+
+From the graph we can see that the BVH works well with scenes that are
+already divided into several objects. Scene 1 and 2 are good fit for
+the algorithm because most leaf nodes have a low amount of geometry,
+and the increase of resolution plays little role in the rise of
+time. We can observe that the single object scene does not perform as
+well as the other two, since in scene 3 a single object holds all
+geometry, so we can observe that the BVH has little to no improvement,
+since all rays certainly hit the AABB covering the whale, and in the
+end the GPU has to test against all the geometry of the object for
+almost all rays. This is due to the fact that the BVH partitions
+objects, but it does not split geometry, so it depends that the scene
+is already well divided into suitable chuncks. An object with a large
+amount of triangles that covers most of the frame will certainly slow
+down any rendering, even if the avarage triangle count of the scene is
+relatively low.
+
+We also tested against RenderGirl prior the implementation of the BVH,
+by using a scene with several copies of the "Suzanne" model that comes
+with Blender, but only one within the reach of the camera, rendered
+with 1500x1500 pixels of resolution. Each object has 968 triangles and
+507 vertices. We then tested both with and without the BVH with a
+different amount of objects, as shown in
+graph~\ref{fig:bvh-no-bvh-results}. In all tests, only one object
+visible.
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    title={Several Suzanne objects hidden from the camera},
+    xlabel={Objects},
+    ylabel={Seconds},
+    xmin=0, xmax=12,
+    ymin=0, ymax=1.2,
+    xtick={0,1,4,8},
+    ytick={0,0.25,0.5,0.75,1.0},
+    legend pos=north west,
+    ymajorgrids=true,
+    grid style=dashed,
+    scaled ticks=false, tick label style={/pgf/number format/fixed},
+    legend entries={With BVH , Without BVH},
+    % TODO: fix scientific notation
+    % TODO: increase size
+]
+\addplot[
+    color=black,mark=* size=1.5,dashed,nodes near coords
+    ]
+    coordinates {(1,0.0781)(4, 0.0624)(8,0.0624)};
+\addplot[
+    color=red,mark=*,dashed,nodes near coords
+    ]
+    coordinates {(1,0.1249)(4, 0.4531)(8,1.0672)};
+
+\end{axis}
+\end{tikzpicture}
+\caption{Rendering time of three different scenes with a given amount
+  of hidden objects. In all scenes, only one object is visible while
+  the others are behinde the camera.}
+\label{fig:bvh-no-bvh-results}
+\end{figure}
+
+Base on graph~\ref{fig:bvh-no-bvh-results} we can notice that a brute
+force approach forces the GPU to test against all geometry even if its
+behinde the camera, making the time of render increase in
+linearly. Meanwhile the BVH correctly ignore everything but the single
+object visible, so the render time barely changes.
+
+It was our intention to test the same scenes by rendering with and
+without the BVH, but we discovered that the non-BVH version is not
+capable of completing the render of scene 1 and 2, crashing the NVIDIA
+driver before finishing, and sometimes showing half-rendered
+frames. This is likely because we enqueue a single kernel for the
+whole frame. The limitation does not seem to arrive from lack of
+memory, since both version have equal amount of memory consumption, so
+we assume the driver does not properly schedule the kernels, and it is
+the application responsability to make sure the kernels can be
+enqueued at a given time.
+
+For this results, we ignored the extra time spent on Python within
+Blender, so all times are measurements from RenderGirl Core and not
+from Blender. The Blender measurements are several seconds higher than
+the Core. We attribute this to the slower nature of the Python
+interpreter compared with native compiled code in C/C++. Also Blender
+has to perform the triangulation of the entire scene and the data
+strcuture conversion, which includes expensive division operations. We
+don't think this undermine the results of the BVH and the raytracer as
+whole, since we never focused our optimizations at this stage.
 
 \section{Conclusions}
 \label{sec:conclusion}
 
+The BVH performed well within the scope of its ability, providing good
+speedups , even if with some known weaknesses of the aceleration
+structure. For a future development, we could implement an hybrid of
+kd-tree and BVH by partioning objects that are above a given threshold
+of triangle count. We believe the current structure server well the
+average case of a complex 3D scene.
+
+The plugin architecture was validated by embedding the Core on three
+different interfaces that can make use of the same library, e.g
+Blender can run the unmodified RenderGirl that is also embedded on the
+other two interfaces. We can also take advantage of all the facilities
+Blender provides, such as image saving, 3D geometry loading and
+triangulation features. This spare us of having to implement all from
+scrach, enabling our work to be focused on the rendering
+itself. However, we think more work is needed on the Python side of
+RenderGirl, in order to reduce the extra seconds of delay we faced
+when rendering scenes from within Blender.
+
+Another welcome enhancement would be to dispatch the rendering into
+several passes, which would likely solve the problem of the driver
+crash in the non-BVH version of RenderGirl. In this approach a frame
+could be divided into smaller frames, and each kernel enqueue would
+render that specific sub-frame, until the full picture is generated.
+
 With this work, we aim to offer more options for developers of 3D
 modeling programs that want to incorporate a GPU raytracer into their
-software without writing one from scratch. To the best of our
-knowledge there's no free software available with the same design
-goals.
+software without writing one from scratch.
 
 \section{Future work}
 \label{sec:future}

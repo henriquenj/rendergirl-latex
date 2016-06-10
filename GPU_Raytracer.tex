@@ -1,7 +1,7 @@
 % Uses a slightly modified IEEE VGTC template in conference mode
 \documentclass{vgtc}
 \usepackage{times}
-\usepackage{graphicx}
+\usepackage[pdftex]{graphicx}
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -345,6 +345,36 @@ work-items, and hence it's well suited for GPUs.
 % \subsection{Blender Plugin}
 % TODO: blender plugin general architecutre with swig process and
 % python API
+
+\subsection{Scene structures}
+
+In order to make a 3D scene fit into an OpenCL compatible structure,
+we must not rely on complex data structures such as linked lists and
+dynamic arrays. Pointers can only be used with feature called
+\emph{shared virtual memory}, however it's only available on OpenCL
+2.0, and NVIDIA still has its implementation running on 1.2, so we
+didn't want to rely on SVM.
+
+Figure~\ref{fig:data-org} shows how the 3D geometry is organized
+within the target device. The structure is similar to the OBJ file
+format. The core concept are the \emph{global buffers}, e.g. vertices
+buffer. For each buffer we must iterate on, there's an information
+describing its size. The two main buffers are the triangle buffer and
+the vertex buffer. The vertex buffer is indexed by the triangle
+buffer. The triangle buffer is then divided into regions that compose
+the objects. An objects metadata array describes where each object
+starts on the triangle buffer and where it ends. The triangle buffer
+is usually provided by the host program, so we must sanitize it to
+make sure it does not point past the end of the vertices array.
+
+\begin{figure*}
+\centering
+\includegraphics[width=1.0\textwidth]{data-organization.png}
+\caption{The relationship of each data buffer that composes the
+  geometry within the OpenCL device.}
+\label{fig:data-org}
+\end{figure*}
+
 
 \subsection{Acceleration structures}
 

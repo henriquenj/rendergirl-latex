@@ -309,11 +309,9 @@ function which can takes several minutes to complete. Every host
 program will provided different asynchronous APIs for its plugin
 system in a different manner (or not provide it at all) so we don't
 want to impose an asynchronous model at this stage of development,
-leaving it for the interfaces to implement their own. Since
-concurrency model on the rendering portion is handled by OpenCL, the
-only feature we lost by not exposing asynchronous APIs in the core is
-real-time preview. As a initial design decision to ease portability,
-the core contains no system-dependent calls apart from OpenCL itself.
+leaving it for the interfaces to implement their own. As a initial
+design decision to ease portability, the core contains no
+system-dependent calls apart from OpenCL itself.
 
 \begin{figure}
 \centering

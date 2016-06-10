@@ -321,6 +321,44 @@ system-dependent calls apart from OpenCL itself.
 \label{fig:architecture}
 \end{figure}
 
+\subsection{Blender Plugin}
+
+We implemented a Blender plugin, which effectivly made Blender our
+host 3D program for all our tests. Having it within a major 3D program
+is useful since it provides many intersting facilities, such as 3D
+model loading.
+
+Blender does not expose a C/C++ API for its extensions, so we had to
+use the Python API instead. This raised the question of how we could
+connect the RenderGirl C++ API with the Python side. Several solution
+were considered. One approach is to use the C Python
+API\footnote{Python C API manual
+  \url{https://docs.python.org/3.5/c-api/}} within a wrapper interface
+module for RenderGirl, this approach was deemed too complex since it
+would require the adition of compile-time dependency with Python, it
+would also tie our version of Python to Blender's version, likely
+breaking compatibility when Blender decided to change its own
+version. Another approach was to use Swig\footnote{Swig website
+  \url{http://www.swig.org/}} for automatic wrapper generation, this
+option also has the downside of adding compile time dependency and an
+extra build step.
+
+The solution we ultimately choose was to compile a small C wrapper
+around the RenderGirl core into a shared library. With a pure C
+interface, we then used a Python module called ctypes\footnote{ctypes
+  reference \url{https://docs.python.org/3.5/library/ctypes.html}},
+which can load shared libraries and execute C functions loaded from
+it. It provides support for callbacks - used on the log subsystem -
+and all basic C types. With this approach there's no new dependencies
+and no actual Python reference on the compiled Blender interface. We
+can also reuse it on a future plugin from another host program if it
+supports a C API.
+
+There's still a portion written in Python, mostly the conversion of
+data types and user interface additions to Blender. The major
+difference between the data it's that Blender interpret the Y axis as
+the depth instead of height. We also make use of triangulation
+features of Blender, to make the scene compatible with RenderGirl.
 
 \subsection{OpenCL scheduling model}
 
@@ -340,9 +378,6 @@ against all the geometry of that object. This approach works well in
 parallel because does not require any synchronization among
 work-items, and hence it's well suited for GPUs.
 
-% \subsection{Blender Plugin}
-% TODO: blender plugin general architecutre with swig process and
-% python API
 
 \subsection{Scene structures}
 

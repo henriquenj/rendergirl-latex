@@ -594,17 +594,13 @@ version used by this driver is 1.2.
 ]
 % scene 1
 \addplot[
-    color=black,mark=* size=1.5,dashed]
+    color=black,mark=*,mark size = 1, dashed, nodes near coords]
     coordinates {(500,62)(1000, 125)(1500,218)(2000,374)};
 % scene 2
-\addplot[
-    color=red,mark=*,dashed,nodes near coords
-    ]
+\addplot[color=red,mark=*,mark size = 1,dashed,nodes near coords]
     coordinates {(500,296)(1000, 375)(1500,501)(2000,695)};
 %scene 3
-\addplot[
-    color=blue,mark=*,dashed,nodes near coords
-    ]
+\addplot[color=blue,mark=*,mark size = 1,dashed,nodes near coords]
     coordinates {(500,203)(1000, 829)(1500,1875)(2000,3227)};
 
 \end{axis}
@@ -659,11 +655,11 @@ visible.
     % TODO: increase size
 ]
 \addplot[
-    color=black,mark=* size=1.5,dashed,nodes near coords
+    color=black,mark=* , mark size=1,dashed,nodes near coords
     ]
     coordinates {(1,0.0781)(4, 0.0624)(8,0.0624)};
 \addplot[
-    color=red,mark=*,dashed,nodes near coords
+    color=red,mark=*, mark size = 1,dashed,nodes near coords
     ]
     coordinates {(1,0.1249)(4, 0.4531)(8,1.0672)};
 

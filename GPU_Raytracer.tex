@@ -641,11 +641,11 @@ visible.
 \begin{axis}[
     title={Several Suzanne objects hidden from the camera},
     xlabel={Objects},
-    ylabel={Seconds},
+    ylabel={Milliseconds},
     xmin=0, xmax=12,
-    ymin=0, ymax=1.2,
+    ymin=0, ymax=1200,
     xtick={0,1,4,8},
-    ytick={0,0.25,0.5,0.75,1.0},
+    ytick={0,250,500,750,1000},
     legend pos=north west,
     ymajorgrids=true,
     grid style=dashed,
@@ -657,11 +657,11 @@ visible.
 \addplot[
     color=black,mark=* , mark size=1,dashed,nodes near coords
     ]
-    coordinates {(1,0.0781)(4, 0.0624)(8,0.0624)};
+    coordinates {(1,78)(4, 62)(8,62)};
 \addplot[
     color=red,mark=*, mark size = 1,dashed,nodes near coords
     ]
-    coordinates {(1,0.1249)(4, 0.4531)(8,1.0672)};
+    coordinates {(1,124)(4, 453)(8,1067)};
 
 \end{axis}
 \end{tikzpicture}

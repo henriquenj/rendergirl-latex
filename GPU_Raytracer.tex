@@ -566,6 +566,8 @@ case. We used the followng test scenes:
   resolutions.
 \item Scene 3: A scene with a single whale object containing 8.432
   vertices and 16.764 triangles.
+\item Scene 4: A scene depicting a cabin. It contains 93.570, 178.104
+  triangles divided into 250 objects.
 \end{itemize}
 
 The figure~\ref{fig:scenes-results} shows ours results using the
@@ -588,20 +590,23 @@ version used by this driver is 1.2.
     ymajorgrids=true,
     grid style=dashed,
     scaled ticks=false, tick label style={/pgf/number format/fixed},
-    legend entries={Scene1, Scene2,Scene3},
+    legend entries={Scene 1, Scene 2,Scene 3,Scene 4},
     % TODO: fix scientific notation
     % TODO: increase size
 ]
 % scene 1
 \addplot[
-    color=black,mark=*,mark size = 1, dashed, nodes near coords]
+    color=black,mark=*,mark size = 1, dashed, nodes near coords, nodes near coords align={horizontal}]
     coordinates {(500,62)(1000, 125)(1500,218)(2000,374)};
 % scene 2
 \addplot[color=red,mark=*,mark size = 1,dashed,nodes near coords]
     coordinates {(500,296)(1000, 375)(1500,501)(2000,695)};
 %scene 3
-\addplot[color=blue,mark=*,mark size = 1,dashed,nodes near coords]
+\addplot[color=blue,mark=*,mark size = 1,dashed,nodes near coords, nodes near coords align={horizontal}]
     coordinates {(500,203)(1000, 829)(1500,1875)(2000,3227)};
+% scene 4
+\addplot[color=violet,mark=*,mark size = 1,dashed,nodes near coords=\raisebox{0.1cm}{\pgfmathprintnumber\pgfplotspointmeta}]
+    coordinates {(500,314)(1000,779)(1500,1521)(2000,2540)};
 
 \end{axis}
 \end{tikzpicture}
@@ -624,7 +629,11 @@ objects, but it does not split geometry, so it depends that the scene
 is already well divided into suitable chuncks. An object with a large
 amount of triangles that covers most of the frame will certainly slow
 down any rendering, even if the avarage triangle count of the scene is
-relatively low.
+relatively low. Scene 4 also performs slightly better than the whale
+scene, even though it has a good amount of objects, the reason for
+this is that we have a floor object on the scene that contains a great
+amount of triangles and covers most of the frame, creating a situation
+like the whale scene.
 
 We also tested against RenderGirl prior the implementation of the BVH,
 by using a scene with several copies of the "Suzanne" model that comes
@@ -655,7 +664,7 @@ visible.
     % TODO: increase size
 ]
 \addplot[
-    color=black,mark=* , mark size=1,dashed,nodes near coords
+    color=black,mark=* , mark size=1,dashed,nodes near coords,nodes near coords align={horizontal}
     ]
     coordinates {(1,78)(4, 62)(8,62)};
 \addplot[
@@ -673,13 +682,13 @@ visible.
 
 Base on graph~\ref{fig:bvh-no-bvh-results} we can notice that a brute
 force approach forces the GPU to test against all geometry even if its
-behinde the camera, making the time of render increase in
+behind the camera, making the time of render increase in
 linearly. Meanwhile the BVH correctly ignore everything but the single
 object visible, so the render time barely changes.
 
 It was our intention to test the same scenes by rendering with and
 without the BVH, but we discovered that the non-BVH version is not
-capable of completing the render of scene 1 and 2, crashing the NVIDIA
+capable of completing the render of scene 1, 2 and 4, crashing the NVIDIA
 driver before finishing, and sometimes showing half-rendered
 frames. This is likely because we enqueue a single kernel for the
 whole frame. The limitation does not seem to arrive from lack of

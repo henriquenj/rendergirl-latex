@@ -93,29 +93,29 @@ portability OpenCL provides to hardware vendors and developers. By
 being modular, it's also capable of running inside larger 3D suites
 such as Blender, this way we can delegate other tasks to the host 3D
 program and focuses on the rendering tasks. We developed a C++
-application and a reference plugin for Blender, used to validate the
-plugin architecture. The code has only portable system calls and
-OpenCL function calls.
+application and a reference plugin for Blender, used to validate this
+architecture. The code has only portable system calls and OpenCL
+function calls.
 
 Intrinsic problems that arrives with GPU ray tracing includes the cost
 of synchronizing and stopping working threads, poor branch prediction,
 high latency of different OpenCL memory models, high latency on the
 bus used between GPU and main memory (usually PCI Express) and the
 broad variety of GPUs and OpenCL capable hardware, which can generate
-different results on different setups.
+different results on different setups. It cannot have complex data
+structures such as dynamic arrays and linked lists.
 
-Non real-time renderers do not have time constraints and therefore can
-employ expensive algorithms, generating images of higher quality,
-while taking advantage of the spatial structures in order to speed up
-operations. This is the case for our work. There are several
-acceleration structures for increase the efficiency of rendering,
-which are called \emph{spatial data structures}. Some of these
-structures are \emph{bounding volume hierarchies} (BVH), \emph{binary
-  space partitioning}, trees, quad-trees and octrees. They
+There are several acceleration structures for increase the efficiency
+of rendering, which are called \emph{spatial data structures}. Some of
+these structures are \emph{bounding volume hierarchies} (BVH),
+\emph{binary space partitioning}, trees, quad-trees and octrees. They
 hierarchically subdivided a scene so the queries for the objects
-become faster \cite[Chapter~14.1]{akenine-moller:2008}. For
-RenderGirl, we developed a variant of the BVH partioning structure
-suitable for stackless traversal on the GPU.
+become faster \cite[Chapter~14.1]{akenine-moller:2008}. Non real-time
+renderers do not have time constraints and therefore can employ
+expensive algorithms, generating images of higher quality, but also
+taking advantage of the spatial structures in order to speed up
+operations. For RenderGirl, we developed a variant of the BVH
+partioning structure suitable for stackless traversal on the GPU.
 
 
 Our contributions include:
@@ -188,7 +188,7 @@ Parshin write a comparative study of ray-triangle intersection
 algorithms, how they perform on GPU hardware and how BVH acceleration
 structures can be optimized for each one. They point out that some of
 their results differs from generation to generation of the same line
-of GPUS due to change in the micro-architecture.
+of GPUs due to change in the micro-architecture.
 % TODO: this last sentece should go to other section, more specific
 \cite{Shumskiy}. Wong and colleagues propose an optimization method for
 GPU ray tracing by dividing objects into view-sets based on light and
@@ -224,16 +224,15 @@ system.
 
 We developed a GPU raytracer using the OpenCL framework called
 \emph{RenderGirl}\footnote{RenderGirl project page
-\url{https://github.com/henriquenj/rendergirl}} licensed under
-LGPL. Our work aims to be useful to architects interested in using
-their GPU hardware for rendering models. We try not to pose any
-restriction on the use of the software regarding its host program, so
-anyone can implement their own interfaces.
+  \url{https://github.com/henriquenj/rendergirl}} licensed under LGPL.
+We try not to pose any restriction on the use of the software
+regarding its host program, so anyone can implement their own
+interfaces.
 
 Most part of the code is written using C++, with small portions
 written in Python and OpenCL C. Tools used in the development include
-Visual Studio for project files and compilation under Windows, Git for
-source control.
+Visual Studio for project files and compilation under Windows and Git
+for source control.
 
 The host program of RenderGirl is Blender, which provides all the base
 functionality of a 3D software suite. RenderGirl connects with Blender
@@ -262,29 +261,29 @@ The core portion is a static library that provides an API for
 receiving the 3D scene structure - vertices, triangles, objects,
 cameras and lights - and OpenCL device selection. It performs all the
 communication between OpenCL and the interfaces, handling its
-context. The output of render function is an array of pixels with the
-rendered frame. It also provides the Log Subsystem dedicated to log
-operations. Most of the interactions with the raytracer occurs using a
-shared object called \emph{RenderGirlShared}, which is implemented as
-a shared singleton. Scene structures are managed by a singleton called
-\emph{SceneManager}, providing an API for setting up a scene using
-RenderGirl data structures; it's also responsible by subdividing the
-scene into BVH structures and make it suitable for OpenCL memory
-models.
+context. The output of the render is an array of pixels with the
+rendered frame. The core also provides the Log Subsystem dedicated to
+log operations. Most of the interactions with the raytracer occurs
+using a shared object called \emph{RenderGirlShared}, which is
+implemented as a shared singleton. Scene structures are managed by a
+singleton called \emph{SceneManager}, providing an API for setting up
+a scene using RenderGirl data structures; it's also responsible by
+subdividing the scene into BVH structures and make it suitable for
+OpenCL memory models.
 
 
 The interfaces can be anything from executables to dynamic libraries,
 depending on the plugin interface provided by the host 3D
 program. Interfaces link with the core at compile time and translate
-all the requests from host program. They can pick individual features
-to support, and a given interface may support only a subset of
-features of the core. Three interfaces are provided as examples, they
-are:
+all the requests from the host program. They can pick individual
+features to support, and a given interface may support only a subset
+of features of the core. Three interfaces are provided as examples,
+they are:
 
 \begin{itemize}
 \item \emph{Console interface}: The simplest interface. It links with
   the core and compiles as an executable. It only provides options for
-  OBJ loader and does not output any image file. It's useful for
+  OBJ loading and does not output any image file. It's useful for
   porting the Core for other platforms and make sure it's working.
 \item \emph{wxWidgets interface}: compiles as an standalone
   application with a GUI for loading OBJ files and render models,
@@ -300,13 +299,13 @@ are:
 
 The core API is designed to only have synchronous calls, so each
 function call will block the program - including the rendering
-function which can takes several minutes to complete. Every host
-program will provided different asynchronous APIs for its plugin
-system in a different manner (or not provide it at all) so we don't
-want to impose an asynchronous model at this stage of development,
-leaving it for the interfaces to implement their own. As a initial
-design decision to ease portability, the core contains no
-system-dependent calls apart from OpenCL itself.
+function which can takes several minutes to complete. The reasoning
+behind this is that every host program will provided different
+asynchronous APIs for its plugin system in a different manner (or not
+provide it at all) so we don't want to impose an asynchronous model at
+this stage of development, leaving it for the interfaces to implement
+their own. As a initial design decision to ease portability, the core
+contains no system-dependent calls apart from OpenCL itself.
 
 \begin{figure}
 \centering
@@ -351,9 +350,10 @@ supports a C API.
 
 There's still a portion written in Python, mostly the conversion of
 data types and user interface additions to Blender. The major
-difference between the data it's that Blender interpret the Y axis as
-the depth instead of height. We also make use of triangulation
-features of Blender, to make the scene compatible with RenderGirl.
+difference between the data from both programs is that Blender
+interpret the Y axis as the depth instead of height. We also make use
+of triangulation features of Blender, to make the scene compatible
+with RenderGirl.
 
 \subsection{OpenCL scheduling model}
 
@@ -378,7 +378,7 @@ work-items, and hence it's well suited for GPUs.
 
 In order to make a 3D scene fit into an OpenCL compatible structure,
 we must not rely on complex data structures such as linked lists and
-dynamic arrays. Pointers can only be used with feature called
+dynamic arrays. Pointers can only be used with a feature called
 \emph{shared virtual memory}, however it's only available on OpenCL
 2.0, and NVIDIA still has its implementation running on 1.2, so we
 didn't want to rely on SVM.
@@ -425,9 +425,9 @@ BVH for our own implementation.
 
 The process of using aceleration structures is usually divided in two
 steps: \emph{construction} and \emph{traversal}. The BVH was
-originally proposed by Kay and Kajiya\cite{kay1986ray}, they describes
-a CPU only implementation using convex hulls as bounding volumes for
-each level of the tree.
+originally proposed by Kay and Kajiya\cite{kay1986ray}, they describe
+a implementation using convex hulls as bounding volumes for each level
+of the tree.
 
 For our BVH in GPU, the \emph{construction} portion is roughtly the
 same as described by Kay and Kajiya. The BVH is built as a binary tree
@@ -452,26 +452,26 @@ that object within the leaf node. All the construction phase happens
 on the CPU.
 
 On the \emph{traversal} step, we implemented the traversal algorithm
-described by Thrane and Simonsen in their master thesis. The main
-problem to be solved here is overcome the lack of stack on GPU
-hardware, since tree traversal algorithms are usually implemented
-using recursion. The key difference from traditional CPU
-implementations is that we build a fixed-order \emph{traversal array}
-on the CPU and only iterate over it in the GPU, so we never transmit
-the tree to the OpenCL device and rather the iteration itself. The
-traversal array already contains the nodes we must intersect in the
-corret order. The BVH node on the traversal array have three
-properties: the AABB that fits all the geometry of that node and its
-children, the \emph{escape index} and a index that points to an object
-in the global list of objects. The object index is only valid on child
-nodes, and it's flagged as -1 when on a middle node. The escape index
+described by Thrane and Simonsen in their master
+thesis\cite{Thrane}. The main problem to be solved here is overcome
+the lack of stack on GPU hardware, since tree traversal algorithms are
+usually implemented using recursion. The key difference from
+traditional CPU implementations is that we build a fixed-order
+\emph{traversal array} on the CPU and only iterate over it in the GPU,
+so we never transmit the tree to the OpenCL device and rather the
+iteration itself. The traversal array already contains the nodes we
+must intersect in the corret order. The BVH node on the traversal
+array have three properties: the AABB that fits all the geometry of
+that node and its children, the \emph{escape index} and a index that
+points to an object in the global list of objects. The escape index
 represents the index where the traversal should resume if the current
 node's AABB fail to intersect with the ray. If the traversal should
 end, the escape index is equal to the size of the traversal array,
 acting as a global escape index. This can be visualized on
-figure~\ref{fig:bvh}. The traversal is done in a top botton left to
-right order. The algorithm for traversal is detailed on
-Algorithm~\ref{alg:bvh-traversal}.
+figure~\ref{fig:bvh}. The object index is only valid on child nodes,
+and it's flagged as -1 when on a middle node. The traversal is done in
+a top-botton left to right order. The algorithm for traversal is
+detailed on Algorithm~\ref{alg:bvh-traversal}.
 
 
 \begin{algorithm}
@@ -542,7 +542,7 @@ subsystem, which will keep a list of listeners and will forward the
 messages to all the objects on the list. The interface can then
 capture the messages and print it to the user.
 
-\subsection{Results}
+\section{Results}
 \label{sec:results}
 
 We tested our raytracer implementaton by running it from Blender using
@@ -551,13 +551,12 @@ object distributions in order to test how the BVH performs on each
 case. We used the followng test scenes:
 
 \begin{itemize}
-\item Scene 1: A simples scene depicting a table and some kitchen objects. It
-  contains 21.424 vertices, 42,848 triangles divided into 28
-  objects. We tested using several different resolutions.
+\item Scene 1: A simples scene depicting a table and some kitchen
+  objects. It contains 21.424 vertices, 42,848 triangles divided into
+  28 objects.
 \item Scene 2: The same scene as before but with several evenly
   distributed tables. It contains 203.644 vertices, 405.242 triangles
-  divided into 233 objects. We tested using several different
-  resolutions.
+  divided into 233 objects.
 \item Scene 3: A scene with a single whale object containing 8.432
   vertices and 16.764 triangles.
 \item Scene 4: A scene depicting a cabin. It contains 93.570, 178.104
@@ -603,7 +602,7 @@ version used by this driver is 1.2.
 \end{axis}
 \end{tikzpicture}
 \caption{Rendering time of the three scenes across diferent
-  resoltions. Pixels value represents both width and height.}
+  resolutions. Resolution value represents both width and height.}
 \label{fig:scenes-results}
 \end{figure}
 
@@ -620,12 +619,11 @@ almost all rays. This is due to the fact that the BVH partitions
 objects, but it does not split geometry, so it depends that the scene
 is already well divided into suitable chuncks. An object with a large
 amount of triangles that covers most of the frame will certainly slow
-down any rendering, even if the avarage triangle count of the scene is
-relatively low. Scene 4 also performs slightly better than the whale
-scene, even though it has a good amount of objects, the reason for
-this is that we have a floor object on the scene that contains a great
-amount of triangles and covers most of the frame, creating a situation
-like the whale scene.
+down any rendering, even if the triangle count of the scene is
+relatively low. Scene 4 also performs poorly even though it has a good
+amount of objects, the reason for this is that we have a floor object
+on the scene that contains a great amount of triangles and covers most
+of the frame, creating a situation like the whale scene.
 
 We also tested against RenderGirl prior the implementation of the BVH,
 by using a scene with several copies of the "Suzanne" model that comes
@@ -678,14 +676,14 @@ object visible, so the render time barely changes.
 
 It was our intention to test the same scenes by rendering with and
 without the BVH, but we discovered that the non-BVH version is not
-capable of completing the render of scene 1, 2 and 4, crashing the NVIDIA
-driver before finishing, and sometimes showing half-rendered
+capable of completing the render of scene 1, 2 and 4, crashing the
+NVIDIA driver before finishing, and sometimes showing half-rendered
 frames. This is likely because we enqueue a single kernel for the
 whole frame. The limitation does not seem to arrive from lack of
 memory, since both version have equal amount of memory consumption, so
-we assume the driver does not properly schedule the kernels, and it is
-the application responsability to make sure the kernels can be
-enqueued at a given time.
+we assume the driver does not properly schedule our command buffer,
+and it is the application responsability to make sure the kernel can
+be enqueued at a given time.
 
 For this results, we ignored the extra time spent on Python within
 Blender, so all times are measurements from RenderGirl Core and not
@@ -719,7 +717,7 @@ whole, since we never focused our optimizations at this stage.
 \endminipage\hfill
 \end{figure*}
 
-\section{Conclusions}
+\section{Conclusions and future work}
 \label{sec:conclusion}
 
 The BVH performed well within the scope of its ability, providing good
@@ -734,8 +732,7 @@ operations takes full advantage of the OpenCL device. For instance a
 BVH that takes 3 seconds more to generate must save at least 3 seconds
 worth of processing on the device, so a solution for the worst case of
 the BVH should taken into consideration the whole context of the
-application. We believe the current structure serves well the average
-case of a complex 3D scene.
+application.
 
 The plugin architecture was validated by embedding the Core on three
 different interfaces that can make use of the same library, e.g
@@ -757,9 +754,6 @@ render that specific sub-frame, until the full picture is generated.
 With this work, we aim to offer more options for developers of 3D
 modeling programs that want to incorporate a GPU raytracer into their
 software without writing one from scratch.
-
-\section{Future work}
-\label{sec:future}
 
 
 % \section*{Acknowledgments}

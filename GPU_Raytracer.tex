@@ -92,17 +92,10 @@ of modern GPUs while maintaining hardware agnosticism by using the
 portability OpenCL provides to hardware vendors and developers. By
 being modular, it's also capable of running inside larger 3D suites
 such as Blender, this way we can delegate other tasks to the host 3D
-program and focuses on the rendering tasks.
-% TODO: add here the method of BVH once it's selected
-
-We propose a C++ application with wrappers for
-Python %TODO: do I really need a python wrapper?
-and C++ and a reference plugin for Blender, used to validate the
+program and focuses on the rendering tasks. We developed a C++
+application and a reference plugin for Blender, used to validate the
 plugin architecture. The code has only portable system calls and
-OpenCL function calls. In order to guarantee compilation on multiples
-compilers, CMake was used as build system. Development happens on
-GitHub, which contains the code, issue tracker and
-documentation.
+OpenCL function calls.
 
 Intrinsic problems that arrives with GPU ray tracing includes the cost
 of synchronizing and stopping working threads, poor branch prediction,
@@ -110,19 +103,20 @@ high latency of different OpenCL memory models, high latency on the
 bus used between GPU and main memory (usually PCI Express) and the
 broad variety of GPUs and OpenCL capable hardware, which can generate
 different results on different setups.
-% TODO add benefits of programming using GPUs, start with "by contrast"
-% TODO find source for this
 
-There are several acceleration structures for increase the efficiency
-of rendering, which are called \emph{spatial data structures}. Some of
-these structures are \emph{bounding volume hierarchies} (BVH),
-\emph{binary space partitioning}, trees, quad-trees and octrees. They
-hierarchically subdivided a scene so the queries for the objects become
-faster \cite[Chapter~14.1]{akenine-moller:2008}. Non real-time renderers
-do not have these constraints and therefore can employ expensive
-algorithms, generating images of higher quality, while taking
-advantage of the spatial structures in order to speed up
-operations. This is the case for our work.
+Non real-time renderers do not have time constraints and therefore can
+employ expensive algorithms, generating images of higher quality,
+while taking advantage of the spatial structures in order to speed up
+operations. This is the case for our work. There are several
+acceleration structures for increase the efficiency of rendering,
+which are called \emph{spatial data structures}. Some of these
+structures are \emph{bounding volume hierarchies} (BVH), \emph{binary
+  space partitioning}, trees, quad-trees and octrees. They
+hierarchically subdivided a scene so the queries for the objects
+become faster \cite[Chapter~14.1]{akenine-moller:2008}. For
+RenderGirl, we developed a variant of the BVH partioning structure
+suitable for stackless traversal on the GPU.
+
 
 Our contributions include:
 
@@ -591,8 +585,6 @@ version used by this driver is 1.2.
     grid style=dashed,
     scaled ticks=false, tick label style={/pgf/number format/fixed},
     legend entries={Scene 1, Scene 2,Scene 3,Scene 4},
-    % TODO: fix scientific notation
-    % TODO: increase size
 ]
 % scene 1
 \addplot[
@@ -660,8 +652,6 @@ visible.
     grid style=dashed,
     scaled ticks=false, tick label style={/pgf/number format/fixed},
     legend entries={With BVH , Without BVH},
-    % TODO: fix scientific notation
-    % TODO: increase size
 ]
 \addplot[
     color=black,mark=* , mark size=1,dashed,nodes near coords,nodes near coords align={horizontal}

@@ -115,7 +115,7 @@ renderers do not have time constraints and therefore can employ
 expensive algorithms, generating images of higher quality, but also
 taking advantage of the spatial structures in order to speed up
 operations. For RenderGirl, we developed a variant of the BVH
-partioning structure suitable for stackless traversal on the GPU.
+partitioning structure suitable for stackless traversal on the GPU.
 
 
 Our contributions include:
@@ -317,9 +317,9 @@ contains no system-dependent calls apart from OpenCL itself.
 
 \subsection{Blender Plugin}
 
-We implemented a Blender plugin, which effectivly made Blender our
+We implemented a Blender plugin, which effectively made Blender our
 host 3D program for all our tests. Having it within a major 3D program
-is useful since it provides many intersting facilities, such as 3D
+is useful since it provides many interesting facilities, such as 3D
 model loading.
 
 Blender does not expose a C/C++ API for its extensions, so we had to
@@ -329,7 +329,7 @@ were considered. One approach is to use the C Python
 API\footnote{Python C API manual
   \url{https://docs.python.org/3.5/c-api/}} within a wrapper interface
 module for RenderGirl, this approach was deemed too complex since it
-would require the adition of compile-time dependency with Python, it
+would require the addition of compile-time dependency with Python, it
 would also tie our version of Python to Blender's version, likely
 breaking compatibility when Blender decided to change its own
 version. Another approach was to use Swig\footnote{Swig website
@@ -423,29 +423,29 @@ branching as the likely responsible for the good results
 \cite{Thrane}. After careful consideration of their results, we choose
 BVH for our own implementation.
 
-The process of using aceleration structures is usually divided in two
+The process of using acceleration structures is usually divided in two
 steps: \emph{construction} and \emph{traversal}. The BVH was
 originally proposed by Kay and Kajiya\cite{kay1986ray}, they describe
 a implementation using convex hulls as bounding volumes for each level
 of the tree.
 
-For our BVH in GPU, the \emph{construction} portion is roughtly the
+For our BVH in GPU, the \emph{construction} portion is roughly the
 same as described by Kay and Kajiya. The BVH is built as a binary tree
 where at each level objects are sorted by their absolute position
 either in X or Y axis, the collection of objects is then split into
-half, composing the two childs of that node. The axis used for
+half, composing the two children of that node. The axis used for
 ordering are swapped at each level of the tree in a attempt to make a
-fair distribuition of objects. This process of ordering and division
+fair distribution of objects. This process of ordering and division
 repeats until the collection of objects is reduced to one, making it a
 leaf node, which then contains all the geometry of that particular
 object. The major difference between our approach is that we use
-\emph{axis-aligned bouding boxes}(AABB) as bouding volumes instead of
+\emph{axis-aligned bounding boxes}(AABB) as bounding volumes instead of
 convex hulls, since the traversal code is less complex, although with
-a much less tightly fit bouding bolume. Thrane and Simonsen mention
+a much less tightly fit bounding volume. Thrane and Simonsen mention
 that there's a great penalty of running complicated code on the
 GPU\cite{Thrane}. Every node holds an AABB fitting all the geometry of
 its child nodes, so a ray must only test a collision against the AABB,
-if the collision fails, the algorithm can discart that sub-tree and
+if the collision fails, the algorithm can discard that sub-tree and
 resume processing on the next sibling node. If the program reaches a
 leaf node, then the ray must be tested against all the geometry of
 that object within the leaf node. All the construction phase happens
@@ -460,7 +460,7 @@ traditional CPU implementations is that we build a fixed-order
 \emph{traversal array} on the CPU and only iterate over it in the GPU,
 so we never transmit the tree to the OpenCL device and rather the
 iteration itself. The traversal array already contains the nodes we
-must intersect in the corret order. The BVH node on the traversal
+must intersect in the correct order. The BVH node on the traversal
 array have three properties: the AABB that fits all the geometry of
 that node and its children, the \emph{escape index} and a index that
 points to an object in the global list of objects. The escape index
@@ -470,7 +470,7 @@ end, the escape index is equal to the size of the traversal array,
 acting as a global escape index. This can be visualized on
 figure~\ref{fig:bvh}. The object index is only valid on child nodes,
 and it's flagged as -1 when on a middle node. The traversal is done in
-a top-botton left to right order. The algorithm for traversal is
+a top-bottom left to right order. The algorithm for traversal is
 detailed on Algorithm~\ref{alg:bvh-traversal}.
 
 
@@ -501,8 +501,8 @@ This implementation is a little bit different than Thrane and Simonsen
 because they implemented the ray-traversal in several passes, where
 the control goes back to CPU, so they must retain intermediate
 renderer states and hit records. This approach is probably due to
-memory contraints at the time the implementation was done. Our
-rendering happens by enqueeing a single OpenCL kernel only once, and
+memory constraints at the time the implementation was done. Our
+rendering happens by enqueuing a single OpenCL kernel only once, and
 the control does not goes back to the CPU until the frame is formed.
 
 \begin{figure}
@@ -545,10 +545,10 @@ capture the messages and print it to the user.
 \section{Results}
 \label{sec:results}
 
-We tested our raytracer implementaton by running it from Blender using
-a variaty of scene configurations. We aim to test different kinds of
+We tested our raytracer implementation by running it from Blender using
+a variety of scene configurations. We aim to test different kinds of
 object distributions in order to test how the BVH performs on each
-case. We used the followng test scenes:
+case. We used the following test scenes:
 
 \begin{itemize}
 \item Scene 1: A simples scene depicting a table and some kitchen
@@ -601,7 +601,7 @@ version used by this driver is 1.2.
 
 \end{axis}
 \end{tikzpicture}
-\caption{Rendering time of the three scenes across diferent
+\caption{Rendering time of the three scenes across different
   resolutions. Resolution value represents both width and height.}
 \label{fig:scenes-results}
 \end{figure}
@@ -617,7 +617,7 @@ since all rays certainly hit the AABB covering the whale, and in the
 end the GPU has to test against all the geometry of the object for
 almost all rays. This is due to the fact that the BVH partitions
 objects, but it does not split geometry, so it depends that the scene
-is already well divided into suitable chuncks. An object with a large
+is already well divided into suitable chunks. An object with a large
 amount of triangles that covers most of the frame will certainly slow
 down any rendering, even if the triangle count of the scene is
 relatively low. Scene 4 also performs poorly even though it has a good
@@ -664,7 +664,7 @@ visible.
 \end{tikzpicture}
 \caption{Rendering time of three different scenes with a given amount
   of hidden objects. In all scenes, only one object is visible while
-  the others are behinde the camera.}
+  the others are behind the camera.}
 \label{fig:bvh-no-bvh-results}
 \end{figure}
 
@@ -682,7 +682,7 @@ frames. This is likely because we enqueue a single kernel for the
 whole frame. The limitation does not seem to arrive from lack of
 memory, since both version have equal amount of memory consumption, so
 we assume the driver does not properly schedule our command buffer,
-and it is the application responsability to make sure the kernel can
+and it is the application responsibility to make sure the kernel can
 be enqueued at a given time.
 
 For this results, we ignored the extra time spent on Python within
@@ -691,7 +691,7 @@ from Blender. The Blender measurements are several seconds higher than
 the Core. We attribute this to the slower nature of the Python
 interpreter compared with native compiled code in C/C++. Also Blender
 has to perform the triangulation of the entire scene and the data
-strcuture conversion, which includes expensive division operations. We
+structure conversion, which includes expensive division operations. We
 don't think this undermine the results of the BVH and the raytracer as
 whole, since we never focused our optimizations at this stage.
 
@@ -721,18 +721,18 @@ whole, since we never focused our optimizations at this stage.
 \label{sec:conclusion}
 
 The BVH performed well within the scope of its ability, providing good
-speedups , even if with some known weaknesses of the aceleration
+speedups , even if with some known weaknesses of the acceleration
 structure. For a future development, we could implement an hybrid of
-kd-tree and BVH by partioning objects that are above a given threshold
-of triangle count, which would speed up the whale scene. Although we
-must still exercise caution on the complexity of the partioning
-scheme, since the generation of the structures are done on the CPU
-side and it's serialized, while the traversal and ray intersection
-operations takes full advantage of the OpenCL device. For instance a
-BVH that takes 3 seconds more to generate must save at least 3 seconds
-worth of processing on the device, so a solution for the worst case of
-the BVH should taken into consideration the whole context of the
-application.
+kd-tree and BVH by partitioning objects that are above a given
+threshold of triangle count, which would speed up the whale
+scene. Although we must still exercise caution on the complexity of
+the partitioning scheme, since the generation of the structures are done
+on the CPU side and it's serialized, while the traversal and ray
+intersection operations takes full advantage of the OpenCL device. For
+instance a BVH that takes 3 seconds more to generate must save at
+least 3 seconds worth of processing on the device, so a solution for
+the worst case of the BVH should taken into consideration the whole
+context of the application.
 
 The plugin architecture was validated by embedding the Core on three
 different interfaces that can make use of the same library, e.g
@@ -740,7 +740,7 @@ Blender can run the unmodified RenderGirl that is also embedded on the
 other two interfaces. We can also take advantage of all the facilities
 Blender provides, such as image saving, 3D geometry loading and
 triangulation features. This spare us of having to implement all from
-scrach, enabling our work to be focused on the rendering
+scratch, enabling our work to be focused on the rendering
 itself. However, we think more work is needed on the Python side of
 RenderGirl, in order to reduce the extra seconds of delay we faced
 when rendering scenes from within Blender.

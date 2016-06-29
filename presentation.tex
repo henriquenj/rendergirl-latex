@@ -59,10 +59,27 @@
 \setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
 }
 
-\usepackage{graphicx} % Allows including images
+\usepackage{times}
+\usepackage{graphicx}
+
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{tikz}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{pifont}
+
+\usepackage{tree-dvips}
+\usepackage{qtree}
+\usepackage{tikz-qtree}
+\usepackage{etoolbox}
+\usepackage{pgfplots}
+\usetikzlibrary{calc}
+
+\newenvironment{figure*}%
+{\begin{figure}}
+{\end{figure}}
+
 
 \title[RenderGirl]{\emph{RenderGirl} - A modular GPU raytracer using OpenCL for non-interactive graphics}
 
@@ -278,12 +295,63 @@ Features supported:
 \item It was necessary to connect the C++ from the core with a Python module loaded by Blender.
 \item Several solutions proposed: Swig, Python C API.
 \item In the end it was used the \emph{ctypes} python module, capable
-  of loading shared libraries if there is an C API.
+  of loading shared libraries if there is an C API. This way the C
+  portion has no knowlege of the Python portion.
 \end{itemize}
 \end{frame}
 
 % TODO: add blender plugin architecture drawning
 
+
+\subsection{Bounding volume hierarchy}
+\begin{frame}
+  \frametitle{Bounding volume hierarchy}
+\begin{itemize}
+\item It was used BVHs as acceleration structures, which was choosed
+  based on a study conducted by Thrane and Simonsen comparing three
+  different acceleration structures on GPUs: bounding volume
+  hierarchies, kd-trees and uniform grids. In their results BVH
+  outperforms the other two\cite{Thrane}. %TODO: every time I cite this guy is a new errro, why?
+\item Divided into two main portions: \emph{construction} and \emph{traversal}.
+\item Construction is done at CPU once per frame and it's
+  serialized. Based on the algorithm developed by original authors of
+  BVH: Kay and Kajiya\cite{kay1986ray}.
+\item Traversal is done at GPU using an algorithm developed by Thrane
+  and Simonsen.
+\end{itemize}
+
+\end{frame}
+
+
+\subsubsection{BVH construction}
+\begin{frame}
+  \frametitle{BVH construction}
+\begin{figure*}
+\centering
+\includegraphics[width=0.8\textwidth]{bvh-construction.png}
+\caption{The BVH visualized on a scene, with each level's AABB. Red
+  bars represent an X split and blue bars Y splits}
+\label{fig:bvh-construction}
+\end{figure*}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{BVH construction}
+\begin{figure}
+\centering
+\input{bvh.tex}
+
+\caption{Visualization of the BVH. The numbers indicate the order of
+  visiting. Dotted arrows represent where the traversal should resume
+  if the ray fails to hit the AABB. 9 is the global escape index. Each
+  leaf node holds an index to the global array of objects, here
+  depicted as a triangle.}
+\label{fig:bvh}
+\end{figure}
+
+\end{frame}
 
 
 \begin{frame}[allowframebreaks]

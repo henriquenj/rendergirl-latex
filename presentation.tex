@@ -280,7 +280,7 @@ Features supported:
   interface and a Blender Plugin interface.
 \item The focus was to make an unmodified core works on all these
   interfaces.
-\item Challanges with Blender plugin due to only use Python API.
+\item Challanges with Blender since it only provides a Python API.
 \end{itemize}
 \end{frame}
 
@@ -295,7 +295,7 @@ Features supported:
 \item It was necessary to connect the C++ from the core with a Python module loaded by Blender.
 \item Several solutions proposed: Swig, Python C API.
 \item In the end it was used the \emph{ctypes} python module, capable
-  of loading shared libraries if there is an C API. This way the C
+  of loading shared libraries if there is a C API. This way the C
   portion has no knowlege of the Python portion.
 \end{itemize}
 \end{frame}
@@ -307,11 +307,12 @@ Features supported:
 \begin{frame}
   \frametitle{Bounding volume hierarchy}
 \begin{itemize}
-\item It was used BVHs as acceleration structures, which was choosed
+\item It was used BVHs as acceleration structures, which was chosen
   based on a study conducted by Thrane and Simonsen comparing three
   different acceleration structures on GPUs: bounding volume
   hierarchies, kd-trees and uniform grids. In their results BVH
-  outperforms the other two\cite{Thrane}. %TODO: every time I cite this guy is a new errro, why?
+  outperforms the other
+  two\cite{Thrane}. %TODO: every time I cite this guy is a new errro, why?
 \item Divided into two main portions: \emph{construction} and \emph{traversal}.
 \item Construction is done at CPU once per frame and it's
   serialized. Based on the algorithm developed by original authors of
@@ -427,6 +428,9 @@ Several scenes were tested:
   BVH, where only one object is visible to the camera and the
   remaining are hidden
 
+  On some scenes, we non-BVH version crashs the GPU driver, which
+  prevents further testing.
+
 \end{frame}
 
 
@@ -510,6 +514,26 @@ Several scenes were tested:
 \end{figure*}
 \end{frame}
 
+
+\section{Future work}
+\begin{frame}
+  \frametitle{Future work}
+
+\begin{itemize}
+\item Distribute render into \emph{passes} as a measure to prevent the crash on the version without BVH.
+\item Optimize the Python side of the Blender plugin.
+\item Implement an hybrid structure that would also split objects that it considers too big for the scene.
+\begin{itemize}
+\item This would need to take into consideration the overall flow of
+  the raytracer.
+\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+% TODO add memory layout
+% TODO add traversal algorithm
 
 \begin{frame}[allowframebreaks]
 \frametitle{References}

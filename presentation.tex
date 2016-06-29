@@ -337,8 +337,9 @@ Features supported:
 \end{frame}
 
 
+\subsubsection{BVH traversal}
 \begin{frame}
-  \frametitle{BVH construction}
+  \frametitle{BVH traversal}
 \begin{figure}
 \centering
 \input{bvh.tex}
@@ -349,6 +350,120 @@ Features supported:
   leaf node holds an index to the global array of objects, here
   depicted as a triangle.}
 \label{fig:bvh}
+\end{figure}
+
+\end{frame}
+
+
+
+\section{Results}
+\begin{frame}
+  \frametitle{Results}
+
+Several scenes were tested:
+\begin{itemize}
+\item Scene 1: A simples scene depicting a table and some kitchen
+  objects. It contains 21.424 vertices, 42,848 triangles divided into
+  28 objects.
+\item Scene 2: The same scene as before but with several evenly
+  distributed tables. It contains 203.644 vertices, 405.242 triangles
+  divided into 233 objects.
+\item Scene 3: A scene with a single whale object containing 8.432
+  vertices and 16.764 triangles.
+\item Scene 4: A scene depicting a cabin. It contains 93.570, 178.104
+  triangles divided into 250 objects.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Results}
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    title={The time of rendering for each scene},
+    xlabel={Resolution},
+    ylabel={Milliseconds},
+    xmin=0, xmax=2500,
+    ymin=0, ymax=4000,
+    xtick={0, 500,1000,1500,2000},
+    ytick={0,1000,2000,3000,4000},
+    legend pos=north west,
+    ymajorgrids=true,
+    grid style=dashed,
+    scaled ticks=false, tick label style={/pgf/number format/fixed},
+    legend entries={Scene 1, Scene 2,Scene 3,Scene 4},
+]
+% scene 1
+\addplot[
+    color=black,mark=*,mark size = 1, dashed, nodes near coords, nodes near coords align={horizontal}]
+    coordinates {(500,62)(1000, 125)(1500,218)(2000,374)};
+% scene 2
+\addplot[color=red,mark=*,mark size = 1,dashed,nodes near coords]
+    coordinates {(500,296)(1000, 375)(1500,501)(2000,695)};
+%scene 3
+\addplot[color=blue,mark=*,mark size = 1,dashed,nodes near coords, nodes near coords align={horizontal}]
+    coordinates {(500,203)(1000, 829)(1500,1875)(2000,3227)};
+% scene 4
+\addplot[color=violet,mark=*,mark size = 1,dashed,nodes near coords=\raisebox{0.1cm}{\pgfmathprintnumber\pgfplotspointmeta}]
+    coordinates {(500,314)(1000,779)(1500,1521)(2000,2540)};
+
+\end{axis}
+\end{tikzpicture}
+\caption{Rendering time of the three scenes across different
+  resolutions. Resolution value represents both width and height.}
+\label{fig:scenes-results}
+\end{figure}
+
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Results}
+
+  It was also tested against RenderGirl prior the implementation of
+  BVH, where only one object is visible to the camera and the
+  remaining are hidden
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Results}
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    title={Several Suzanne objects hidden from the camera},
+    xlabel={Objects},
+    ylabel={Milliseconds},
+    xmin=0, xmax=12,
+    ymin=0, ymax=1200,
+    xtick={0,1,4,8},
+    ytick={0,250,500,750,1000},
+    legend pos=north west,
+    ymajorgrids=true,
+    grid style=dashed,
+    scaled ticks=false, tick label style={/pgf/number format/fixed},
+    legend entries={With BVH , Without BVH},
+]
+\addplot[
+    color=black,mark=* , mark size=1,dashed,nodes near coords,nodes near coords align={horizontal}
+    ]
+    coordinates {(1,78)(4, 62)(8,62)};
+\addplot[
+    color=red,mark=*, mark size = 1,dashed,nodes near coords
+    ]
+    coordinates {(1,124)(4, 453)(8,1067)};
+
+\end{axis}
+\end{tikzpicture}
+\caption{Rendering time of three different scenes with a given amount
+  of hidden objects. In all scenes, only one object is visible while
+  the others are behind the camera.}
+\label{fig:bvh-no-bvh-results}
 \end{figure}
 
 \end{frame}

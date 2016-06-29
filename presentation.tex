@@ -1,0 +1,296 @@
+\documentclass{beamer}
+
+\mode<presentation> {
+
+  % The Beamer class comes with a number of default slide themes which
+  % change the colors and layouts of slides. Below this is a list of
+  % all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes for
+% any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{tikz}
+
+\title[RenderGirl]{\emph{RenderGirl} - A modular GPU raytracer using OpenCL for non-interactive graphics}
+
+\author{Henrique Jung}
+\institute[Unisinos]
+{
+Universidade do Vale do Rio dos Sinos \\
+\medskip
+\textit{henriquenj@gmail.com}
+}
+\date{\today}
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+\begin{frame}
+\frametitle{Overview}
+\tableofcontents
+\end{frame}
+
+\section{Introduction}
+
+\subsection{Motivation}
+\begin{frame}
+\frametitle{Introduction}
+
+\begin{itemize}
+\item Motivation
+
+\begin{itemize}
+\item Study the applications of GPU and GPU programming for non
+  real-time graphics.
+\item Offer more options for developers and users intersted in using
+  dedicated hardware to perform their rendering.
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+
+
+\subsection{Objectives}
+\begin{frame}
+\frametitle{Introduction}
+
+\begin{itemize}
+\item Objectives
+\begin{itemize}
+\item Create a raytracer capable of using specialized hardware while
+  maintaining vendor agnosticism through OpenCL.
+\item Design and implement a modular architecture with known
+  interfaces capable of being plugged into a host 3D program.
+\item Implement and study the applications of accelaration strucutres
+  in the context of raytracing on many-core architectures, with focus
+  on GPU.
+\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+\section{Theory}
+\begin{frame}
+\frametitle{Theory}
+
+\begin{itemize}
+
+\item \emph{RenderGirl} is a raytracer renderer designed to run within the
+OpenCL framework, which can take advantage of \emph{heteregenous
+  platforms} consisting of GPUs, CPUs, FPGAs and some other types of
+hardware.
+
+\item Raytracing is a rendering algorithm based on the concept of
+\emph{rays}, which are sent from a given point in space, creating the
+concept of a camera. Each ray is tested against collision with the
+objects in the scene, and if a collision is found, we may paint that
+pixel with the color of the object.
+
+\item Usually too computationally expensive to be used on real-time
+  graphics.
+
+\item Usually implemented with an accelaration structure that can
+  apply a \emph{heuristic} in order optimize the rendering process.
+
+\end{itemize}
+
+\end{frame}
+
+
+
+\section{Related work}
+\begin{frame}
+\frametitle{Related work}
+
+Recent work related with GPU raytracing:
+
+\begin{itemize}
+
+\item Applications such as Blender Cycles, Octane render, V-ray
+  renderer, Redshift and Indigo Renderer. Indigo and Cycles both claim
+  to run using the OpenCL frmework.
+
+\item OptiX from NVIDIA, which aims to provide a general purpose
+  raytracing engine that can run on the CUDA platform.
+
+\item Áfra and Szirmay-Kalos propose a novel traversal algorithm for
+  BVH that doesn't use a stack\cite{Afra}.
+
+\item Kalajanov and colleagues propose an acceleration structure using
+  hierarchical two-level grids implemented in CUDA\cite{Kalojanov}.
+
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Related work}
+
+\begin{itemize}
+
+\item Ravichandran and colleagues propose a parallel divide and
+  conquer raytracing suited for GPUs\cite{Ravichandran}.
+
+\item Shumskiy and Parshin write a comparative study of ray-triangle
+  intersection algorithms\cite{Shumskiy}.
+
+\item Wong and colleagues propose an optimization method for GPU ray
+  tracing by dividing objects into view-sets based on light and camera
+  position\cite{Wong}.
+
+\item Widmer and colleagues propose efficient hybrid acceleration
+  structure for real-time screen space raytracing\cite{Widmer}.
+
+\end{itemize}
+
+\end{frame}
+
+\section{RenderGirl}
+\begin{frame}
+\frametitle{RenderGirl}
+
+\begin{itemize}
+
+\item RenderGirl is composed of a \emph{core} that communicates with a
+  given \emph{interface}.
+
+\item The core portion is a static library that provides an API for
+  receiving the 3D scene structure - vertices, triangles, objects,
+  cameras and lights. It performs all of the communication between
+  OpenCL and the interfaces, handling its context. It outputs an array
+  of pixels with the rendered frame.
+
+\item Interfaces link with the core at compile time and provide
+  communication with a given host program.
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{RenderGirl}
+
+Features supported:
+
+\begin{itemize}
+\item Rendering of triangulated scenes composed of several objects
+\item Flat shading
+\item OBJ-like materials (except on Blender plugin)
+\item FXAA implemented in OpenCL
+\item BVH partioning structure that optimizes the rendering process.
+\end{itemize}
+
+\end{frame}
+
+\subsection{RenderGirl architecture}
+\begin{frame}
+\frametitle{RenderGirl architecture}
+
+\begin{figure}
+\centering
+\input{architecture_overview.tex}
+\caption{Architecture of RenderGirl. Red represents core components,
+  orange represents interface components.}
+\label{fig:architecture}
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{RenderGirl architecture}
+\begin{itemize}
+\item It was developed three interfaces: console interface, wxWidgets
+  interface and a Blender Plugin interface.
+\item The focus was to make an unmodified core works on all these
+  interfaces.
+\item Challanges with Blender plugin due to only use Python API.
+\end{itemize}
+\end{frame}
+
+
+
+\subsection{Blender plugin}
+\begin{frame}
+\frametitle{Blender plugin}
+\begin{itemize}
+\item Blender only accepts python as scripting language for developing
+  3rd party renderers.
+\item It was necessary to connect the C++ from the core with a Python module loaded by Blender.
+\item Several solutions proposed: Swig, Python C API.
+\item In the end it was used the \emph{ctypes} python module, capable
+  of loading shared libraries if there is an C API.
+\end{itemize}
+\end{frame}
+
+% TODO: add blender plugin architecture drawning
+
+
+
+\begin{frame}[allowframebreaks]
+\frametitle{References}
+\bibliographystyle{amsalpha}    %TODO: fix references markers on
+                                %slides
+\bibliography{references}
+\end{frame}
+
+\end{document}

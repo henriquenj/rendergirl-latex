@@ -1,0 +1,21 @@
+#!/bin/bash
+
+
+# this script will render the presentation slides, some of the assets
+# will be used across the article and the slides (such as graphics)
+
+rm presentation.nav
+rm presentation.snm
+rm presentation.vrb
+rm presentation.blg
+rm presentation.out
+rm presentation.toc
+rm presentation.aux
+rm presentation.log
+rm presentation.pdf
+rm presentation.bbl
+
+pdflatex presentation &&
+bibtex presentation &&
+pdflatex presentation &&
+pdflatex presentation

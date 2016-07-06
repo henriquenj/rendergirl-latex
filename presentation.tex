@@ -390,58 +390,6 @@ Several scenes were tested:
 
 \begin{frame}
   \frametitle{Results}
-
-  It was also tested against RenderGirl prior the implementation of
-  BVH, where only one object is visible to the camera and the
-  remaining are hidden
-
-  On some scenes, the non-BVH version crashs the GPU driver, which
-  prevents further testing.
-
-\end{frame}
-
-
-\begin{frame}
-  \frametitle{Results}
-\begin{figure}
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-    title={Several Suzanne objects hidden from the camera},
-    xlabel={Objects},
-    ylabel={Milliseconds},
-    xmin=0, xmax=12,
-    ymin=0, ymax=1200,
-    xtick={0,1,4,8},
-    ytick={0,250,500,750,1000},
-    legend pos=north west,
-    ymajorgrids=true,
-    grid style=dashed,
-    scaled ticks=false, tick label style={/pgf/number format/fixed},
-    legend entries={With BVH , Without BVH},
-]
-\addplot[
-    color=black,mark=* , mark size=1,dashed,nodes near coords,nodes near coords align={horizontal}
-    ]
-    coordinates {(1,78)(4, 62)(8,62)};
-\addplot[
-    color=red,mark=*, mark size = 1,dashed,nodes near coords
-    ]
-    coordinates {(1,124)(4, 453)(8,1067)};
-
-\end{axis}
-\end{tikzpicture}
-\caption{Rendering time of three different scenes with a given amount
-  of hidden objects. In all scenes, only one object is visible while
-  the others are behind the camera.}
-\label{fig:bvh-no-bvh-results}
-\end{figure}
-
-\end{frame}
-
-
-\begin{frame}
-  \frametitle{Results}
 \begin{figure*}
 \centering
 \includegraphics[width=0.8\textwidth]{several_kitchen.png}
@@ -487,7 +435,7 @@ Several scenes were tested:
   \frametitle{Future work}
 
 \begin{itemize}
-\item Distribute render into \emph{passes} as a measure to prevent the crash on the version without BVH.
+\item Distribute render into \emph{passes}.
 \item Optimize the Python side of the Blender plugin.
 \item Implement an hybrid structure that would also split objects that it considers too big for the scene.
 \begin{itemize}

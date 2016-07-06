@@ -155,9 +155,6 @@ concept of a camera. Each ray is tested against collision with the
 objects in the scene, and if a collision is found, we may paint that
 pixel with the color of the object.
 
-\item Usually too computationally expensive to be used on real-time
-  graphics.
-
 \item Usually implemented with an accelaration structure that can
   apply a \emph{heuristic} in order optimize the rendering process.
 
@@ -179,9 +176,6 @@ Recent work related with GPU raytracing:
   renderer, Redshift and Indigo Renderer. Indigo and Cycles both claim
   to run using the OpenCL frmework.
 
-\item OptiX from NVIDIA, which aims to provide a general purpose
-  raytracing engine that can run on the CUDA platform.
-
 \item Áfra and Szirmay-Kalos propose a novel traversal algorithm for
   BVH that doesn't use a stack\cite{Afra}.
 
@@ -193,7 +187,6 @@ Recent work related with GPU raytracing:
 \end{frame}
 
 
-
 \begin{frame}
 \frametitle{Related work}
 
@@ -201,9 +194,6 @@ Recent work related with GPU raytracing:
 
 \item Ravichandran and colleagues propose a parallel divide and
   conquer raytracing suited for GPUs\cite{Ravichandran}.
-
-\item Shumskiy and Parshin write a comparative study of ray-triangle
-  intersection algorithms\cite{Shumskiy}.
 
 \item Wong and colleagues propose an optimization method for GPU ray
   tracing by dividing objects into view-sets based on light and camera
@@ -280,24 +270,6 @@ Features supported:
 \end{frame}
 
 
-
-\subsection{Blender plugin}
-\begin{frame}
-\frametitle{Blender plugin}
-\begin{itemize}
-\item Blender only accepts python as scripting language for developing
-  3rd party renderers.
-\item It was necessary to connect the C++ from the core with a Python module loaded by Blender.
-\item Several solutions proposed: Swig, Python C API.
-\item In the end it was used the \emph{ctypes} python module, capable
-  of loading shared libraries if there is a C API. This way the C
-  portion has no knowlege of the Python portion.
-\end{itemize}
-\end{frame}
-
-% TODO: add blender plugin architecture drawning
-
-
 \subsection{Bounding volume hierarchy}
 \begin{frame}
   \frametitle{Bounding volume hierarchy}
@@ -358,7 +330,7 @@ Features supported:
 
 Several scenes were tested:
 \begin{itemize}
-\item Scene 1: A simples scene depicting a table and some kitchen
+\item Scene 1: A simple scene depicting a table and some kitchen
   objects. It contains 21.424 vertices, 42,848 triangles divided into
   28 objects.
 \item Scene 2: The same scene as before but with several evenly
@@ -423,7 +395,7 @@ Several scenes were tested:
   BVH, where only one object is visible to the camera and the
   remaining are hidden
 
-  On some scenes, we non-BVH version crashs the GPU driver, which
+  On some scenes, the non-BVH version crashs the GPU driver, which
   prevents further testing.
 
 \end{frame}

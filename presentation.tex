@@ -328,18 +328,15 @@ Features supported:
 \begin{frame}
   \frametitle{Results}
 
-Several scenes were tested:
+Several scenes were tested with increasing resolutions:
 \begin{itemize}
-\item Scene 1: A simple scene depicting a table and some kitchen
-  objects. It contains 21.424 vertices, 42,848 triangles divided into
-  28 objects.
-\item Scene 2: The same scene as before but with several evenly
-  distributed tables. It contains 203.644 vertices, 405.242 triangles
-  divided into 233 objects.
-\item Scene 3: A scene with a single whale object containing 8.432
+\item Scene 1: A scene depicting several tables and some kitchen
+  objects evenly distributed. It contains 203.644 vertices, 405.242
+  triangles divided into 233 objects.
+\item Scene 2: A scene with a single whale object containing 8.432
   vertices and 16.764 triangles.
-\item Scene 4: A scene depicting a cabin. It contains 93.570, 178.104
-  triangles divided into 250 objects.
+\item Scene 3: A scene depicting a cabin. It contains 93.570 vertices,
+  178.104 triangles divided into 250 objects.
 \end{itemize}
 \end{frame}
 
@@ -361,19 +358,15 @@ Several scenes were tested:
     ymajorgrids=true,
     grid style=dashed,
     scaled ticks=false, tick label style={/pgf/number format/fixed},
-    legend entries={Scene 1, Scene 2,Scene 3,Scene 4},
+    legend entries={Kitchens,Whale,Cabin},
 ]
 % scene 1
-\addplot[
-    color=black,mark=*,mark size = 1, dashed, nodes near coords, nodes near coords align={horizontal}]
-    coordinates {(500,62)(1000, 125)(1500,218)(2000,374)};
-% scene 2
 \addplot[color=red,mark=*,mark size = 1,dashed,nodes near coords]
     coordinates {(500,296)(1000, 375)(1500,501)(2000,695)};
-%scene 3
+%scene 2
 \addplot[color=blue,mark=*,mark size = 1,dashed,nodes near coords, nodes near coords align={horizontal}]
     coordinates {(500,203)(1000, 829)(1500,1875)(2000,3227)};
-% scene 4
+% scene 3
 \addplot[color=violet,mark=*,mark size = 1,dashed,nodes near coords=\raisebox{0.1cm}{\pgfmathprintnumber\pgfplotspointmeta}]
     coordinates {(500,314)(1000,779)(1500,1521)(2000,2540)};
 
@@ -390,11 +383,12 @@ Several scenes were tested:
 
 \begin{frame}
   \frametitle{Results}
-\begin{figure*}
+\begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{several_kitchen.png}
-\caption{Scene 2 with the tables}
-\end{figure*}
+\caption{Kitchens: It contains 203.644 vertices, 405.242 triangles
+  divided into 233 objects.}
+\end{figure}
 \end{frame}
 
 
@@ -404,7 +398,8 @@ Several scenes were tested:
 \begin{figure*}
 \centering
 \includegraphics[width=0.8\textwidth]{whale.png}
-\caption{Scene 3 with the single whale object}
+\caption{Whale: A scene with a single whale object containing 8.432
+  vertices and 16.764 triangles.}
 \end{figure*}
 \end{frame}
 
@@ -414,18 +409,8 @@ Several scenes were tested:
 \begin{figure*}
 \centering
 \includegraphics[width=0.8\textwidth]{cabin.png}
-\caption{Scene 4 with the cabin}
-\end{figure*}
-\end{frame}
-
-
-
-\begin{frame}
-  \frametitle{Results}
-\begin{figure*}
-\centering
-\includegraphics[width=0.8\textwidth]{suzanne.png}
-\caption{The scene with the hidden Suzanne objects}
+\caption{Cabin: It contains 93.570, 178.104 triangles divided into 250
+  objects}
 \end{figure*}
 \end{frame}
 

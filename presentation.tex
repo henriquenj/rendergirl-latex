@@ -94,6 +94,9 @@ Universidade do Vale do Rio dos Sinos \\
 
 \begin{document}
 
+% remove "figures" prefix on figures
+\setbeamertemplate{caption}{\raggedright\insertcaption\par}
+
 \begin{frame}
 \titlepage % Print the title page as the first slide
 \end{frame}
@@ -383,12 +386,12 @@ Several scenes were tested with increasing resolutions:
 
 \begin{frame}
   \frametitle{Results}
-\begin{figure}
+\begin{figure*}
 \centering
-\includegraphics[width=0.8\textwidth]{several_kitchen.png}
-\caption{Kitchens: It contains 203.644 vertices, 405.242 triangles
-  divided into 233 objects.}
-\end{figure}
+\includegraphics[width=0.6\textwidth]{several_kitchen.png}
+\caption{Kitchens: 203.644 vertices, 405.242 triangles divided into
+  233 objects.}
+\end{figure*}
 \end{frame}
 
 
@@ -397,9 +400,8 @@ Several scenes were tested with increasing resolutions:
   \frametitle{Results}
 \begin{figure*}
 \centering
-\includegraphics[width=0.8\textwidth]{whale.png}
-\caption{Whale: A scene with a single whale object containing 8.432
-  vertices and 16.764 triangles.}
+\includegraphics[width=0.6\textwidth]{whale.png}
+\caption{Whale: single object, 8.432 vertices and 16.764 triangles.}
 \end{figure*}
 \end{frame}
 
@@ -408,8 +410,8 @@ Several scenes were tested with increasing resolutions:
   \frametitle{Results}
 \begin{figure*}
 \centering
-\includegraphics[width=0.8\textwidth]{cabin.png}
-\caption{Cabin: It contains 93.570, 178.104 triangles divided into 250
+\includegraphics[width=0.6\textwidth]{cabin.png}
+\caption{Cabin: 93.570 vertices, 178.104 triangles divided into 250
   objects}
 \end{figure*}
 \end{frame}

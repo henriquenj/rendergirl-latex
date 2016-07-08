@@ -218,21 +218,9 @@ Recent work related with GPU raytracing:
 \item RenderGirl is composed of a \emph{core} that communicates with a
   given \emph{interface}.
 
-\item The core portion is a static library that provides an API for
-  receiving the 3D scene structure - vertices, triangles, objects,
-  cameras and lights. It performs all of the communication between
-  OpenCL and the interfaces, handling its context. It outputs an array
-  of pixels with the rendered frame.
-
-\item Interfaces link with the core at compile time and provide
-  communication with a given host program.
-
+\item Receive vertices and faces from a host program and outputs a
+  frame.
 \end{itemize}
-
-\end{frame}
-
-\begin{frame}
-  \frametitle{RenderGirl}
 
 Features supported:
 
@@ -240,7 +228,6 @@ Features supported:
 \item Rendering of triangulated scenes composed of several objects
 \item Flat shading
 \item OBJ-like materials (except on Blender plugin)
-\item FXAA implemented in OpenCL
 \item BVH partioning structure that optimizes the rendering process.
 \end{itemize}
 

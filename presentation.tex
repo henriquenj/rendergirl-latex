@@ -284,11 +284,11 @@ Features supported:
   outperforms the other
   two\cite{Thrane}. %TODO: every time I cite this guy is a new errro, why?
 \item Divided into two main portions: \emph{construction} and \emph{traversal}.
-\item Construction is done at CPU once per frame and it's
-  serialized. Based on the algorithm developed by original authors of
-  BVH: Kay and Kajiya\cite{kay1986ray}.
-\item Traversal is done at GPU using an algorithm developed by Thrane
-  and Simonsen.
+\item Construction is performed recursively at CPU once per frame and
+  it's serialized. Based on the algorithm developed by original
+  authors of BVH: Kay and Kajiya\cite{kay1986ray}.
+\item Traversal is done iteratively at GPU using an algorithm
+  developed by Thrane and Simonsen. Must work without a stack.
 \end{itemize}
 
 \end{frame}
@@ -318,6 +318,14 @@ Features supported:
 \caption{Visualization of the BVH}
 \label{fig:bvh}
 \end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{traversal_array.png}
+\caption{Traversal Array}
+\label{fig:traversal}
+\end{figure}
+
 
 \end{frame}
 

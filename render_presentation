@@ -16,6 +16,7 @@ rm presentation.pdf
 rm presentation.bbl
 
 inkscape bvh-construction.svg --export-png=bvh-construction.png &&
+inkscape traversal_array.svg --export-png=traversal_array.png &&
 pdflatex presentation &&
 bibtex presentation &&
 pdflatex presentation &&

@@ -112,8 +112,8 @@ these structures are \emph{bounding volume hierarchies} (BVH),
 hierarchically subdivide a scene so that the queries for their objects
 become faster \cite[Chapter~14.1]{akenine-moller:2008}. Non real-time
 renderers do not have time constraints and therefore can employ
-expensive algorithms, generating images of higher quality, but also
-taking advantage of the spatial structures in order to speed up
+expensive algorithms, generating images of higher quality. They can also
+take advantage of spatial structures in order to speed up
 operations. For RenderGirl, we developed a variant of the BVH
 partitioning structure suitable for stackless traversal on the GPU.
 
@@ -358,7 +358,7 @@ with RenderGirl.
 
 \subsection{OpenCL scheduling model}
 
-OpenCL dispatch each execution of the raytracer by running a piece of
+OpenCL dispatches each execution of the raytracer by running a piece of
 code called \emph{kernel}. Each kernel runs once inside a
 \emph{work-item} which belongs to a \emph{work-group}. The exact
 nature of the execution will be hardware dependent - e.g. a work-item
@@ -369,7 +369,7 @@ kernels do not perform any synchronization.
 We launch one work-item executing one kernel per pixel of the
 image. Each kernel will then build a ray based on pixel location
 within the image to be tested for collision against the BVH structure,
-where each ray may reach a leaf node, which in that case it must test
+where each ray may reach a leaf node, in which case it must test
 against all the geometry of that object. This approach works well in
 parallel because it does not require any synchronization among
 work-items, hence it's well suited for GPUs.
@@ -602,7 +602,7 @@ version used by this driver is 1.2.
 
 \end{axis}
 \end{tikzpicture}
-\caption{Rendering time of the three scenes across different
+\caption{Rendering time of the four scenes across different
   resolutions. Resolution value represents both width and height.}
 \label{fig:scenes-results}
 \end{figure}
@@ -670,11 +670,11 @@ visible.
 \label{fig:bvh-no-bvh-results}
 \end{figure}
 
-Base on graph~\ref{fig:bvh-no-bvh-results} we can notice that a brute
+Based on graph~\ref{fig:bvh-no-bvh-results} we can notice that a brute
 force approach forces the GPU to test against all geometry even if its
-behind the camera, making the time of render increase in
-linearly. Meanwhile the BVH correctly ignore everything but the single
-object visible, so the render time barely changes.
+behind the camera, making a more steep time increase. Meanwhile the
+BVH correctly ignore everything but the single object visible, so the
+render time barely changes.
 
 It was our intention to test the same scenes by rendering with and
 without the BVH, but we discovered that the non-BVH version is not
@@ -687,7 +687,7 @@ we assume the driver does not properly schedule our command buffer,
 and it is the application responsibility to make sure the kernel can
 be enqueued at a given time.
 
-For this results, we ignored the extra time spent on Python within
+For these results, we ignored the extra time spent on Python within
 Blender, so all times are measurements from RenderGirl Core and not
 from Blender. The Blender measurements are several seconds higher than
 the Core. We attribute this to the slower nature of the Python
@@ -726,10 +726,10 @@ The BVH performed well within the scope of its ability, providing good
 speedups , even if with some known weaknesses of the acceleration
 structure. For a future development, we could implement an hybrid of
 kd-tree and BVH by partitioning objects that are above a given
-threshold of triangle count, which would speed up the whale
+threshold of triangle count, which would speed up cases like the whale
 scene. Although we must still exercise caution on the complexity of
-the partitioning scheme, since the generation of the structures are done
-on the CPU side and it's serialized, while the traversal and ray
+the partitioning scheme, since the generation of the structures are
+done on the CPU side and it's serialized, while the traversal and ray
 intersection operations takes full advantage of the OpenCL device. For
 instance a BVH that takes 3 seconds more to generate must save at
 least 3 seconds worth of processing on the device, so a solution for

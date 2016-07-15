@@ -15,6 +15,7 @@
 \usepackage{tikz-qtree}
 \usepackage{etoolbox}
 \usepackage{pgfplots}
+\usepackage{float}
 \usetikzlibrary{calc}
 
 
@@ -92,25 +93,15 @@ application and a reference plugin for Blender, used to validate this
 architecture. The code has only portable system calls and OpenCL
 function calls.
 
-Intrinsic problems that arrive with GPU ray tracing include the cost
-of synchronizing and stopping working threads, poor branch prediction,
-high latency of different OpenCL memory models, high latency on the
-bus used between GPU and main memory (usually PCI Express) and the
-broad variety of GPUs and OpenCL capable hardware, which can generate
-different results on different setups. It also cannot have complex data
-structures such as dynamic arrays and linked lists.
-
-There are several acceleration structures meant to increase the efficiency
-of rendering, which are called \emph{spatial data structures}. Some of
-these structures are \emph{bounding volume hierarchies} (BVH),
-\emph{binary space partitioning}, trees, quad-trees and octrees. They
-hierarchically subdivide a scene so that the queries for their objects
-become faster \cite[Chapter~14.1]{akenine-moller:2008}. Non real-time
-renderers do not have time constraints and therefore can employ
-expensive algorithms, generating images of higher quality. They can also
-take advantage of spatial structures in order to speed up
-operations. For RenderGirl, we developed a variant of the BVH
-partitioning structure suitable for stackless traversal on the GPU.
+There are several acceleration structures meant to increase the
+efficiency of rendering, which are called \emph{spatial data
+  structures}. Some of these structures are \emph{bounding volume
+  hierarchies} (BVH), \emph{binary space partitioning}, trees,
+quad-trees and octrees. They hierarchically subdivide a scene so that
+the queries for their objects become faster
+\cite[Chapter~14.1]{akenine-moller:2008}. For RenderGirl, we developed
+a variant of the BVH partitioning structure suitable for stackless
+traversal on the GPU.
 
 
 Our contributions include:
@@ -147,23 +138,6 @@ versions of Blender ship with Cycles that works with limited features
 also on OpenCL, although the developers specify that the CUDA platform
 is more mature \footnote{Cycles GPU rendering page
   \url{http://www.blender.org/manual/render/cycles/gpu_rendering.html}}.
-Cycles also takes a different approach for device abstraction by
-performing \emph{platform abstraction} by issuing commands to a common
-\emph{device interface} that can redirect function calls to CUDA,
-OpenCL, CPU or network; although the latter is still experimental
-\footnote{Blender Cycles Developer Documentation
-  \url{http://wiki.blender.org/index.php/Dev:2.6/Source/Render/Cycles/Devices}}. Our
-work delegates the device abstraction entirely to OpenCL.
-
-NVIDIA developed a framework called NVIDIA OptiX \footnote{OptiX
-  website \url{https://developer.nvidia.com/optix}} which is intended
-to be a general purpose ray tracing engine designed for NVIDIA GPUs
-and other many-core architectures. It can be used for a variety of
-tracing-based algorithms and also on domains beyond computer graphics
-such as sound propagation, collision-detection and artificial
-intelligence. They aim to provide a set of programmable operations for
-implementing ray tracing operations, in a pipeline model comparable
-with OpenGL and Direct3D \cite{Parker:2010:OGP:1778765.1778803}.
 
 Recent related work on the computing literature includes: Áfra and
 Szirmay-Kalos propose a novel traversal algorithm for BVH that doesn't
@@ -185,30 +159,16 @@ structures can be optimized for each one. They point out that some of
 their results differ from generation to generation of the same line
 of GPUs due to changes in the micro-architecture.
 % TODO: this last sentece should go to another section, more specific
-\cite{Shumskiy}. Wong and colleagues propose an optimization method for
-GPU ray tracing by dividing objects into view-sets based on light and
-camera position, the BVH is then built using these views-sets, this
-way the amount of triangles on the BVH is reduced \cite{Wong}. Widmer
-and colleagues propose efficient acceleration structure for real-time
-screen space raytracing, they use a hybrid data structure combining
-BVH and local planar approximation \cite{Widmer}. A great portion of
-these works deal with acceleration structures for GPU raytracing -
-e.g. kd-trees, BVHs -, which indicates the complexity of these
-structures on GPU hardware.
+\cite{Shumskiy}. Wong and colleagues propose an optimization method
+for GPU ray tracing by dividing objects into view-sets based on light
+and camera position, the BVH is then built using these views-sets,
+this way the amount of triangles on the BVH is reduced \cite{Wong}. A
+great portion of these works deal with acceleration structures for GPU
+raytracing - e.g. kd-trees, BVHs -, which indicates the complexity of
+these structures on GPU hardware.
 
 
 \subsection{Contextualization}
-
-Our own implementation relies on the ray-triangle intersection algorithm
-developed by Möller and Trumbore that aims to be fast by avoiding
-ray-plane intersections\cite{moller}.
-
-While the software is intended to work on all hardware capable of
-running OpenCL, we tried to focus on GPUs, so optimization for this
-type of processor received preference. It's also worth noting that
-this work does not have real-time constraints and it is designed to be
-used as an \emph{offline} raytracing, so image quality is more
-important than rendering times.
 
 Our work differs from the previously mentioned publications by
 focusing on modularity and portability, both of hardware and operating
@@ -224,33 +184,17 @@ We try not to pose any restriction on the use of the software
 regarding its host program, so anyone can implement their own
 interfaces.
 
-Most of the code is written using C++, with small portions
-written in Python and OpenCL C. Tools used in the development include
-Visual Studio for project files and compilation under Windows and Git
-for source control.
-
 The host program of RenderGirl is Blender, which provides all the base
 functionality of a 3D software suite. RenderGirl connects with Blender
 through its Python API and implements a \emph{RenderEngine}
 interface. The host software performs all communication with the final
 user through its own GUI.
 
-The software can also run as a standalone executable file through its
-command-line interface. This interface has minimum dependencies and
-does not output any files, it just reports if the rendering was successful.
-
-We try not to implement features that are not intrinsically related with
-rendering, so RenderGirl delegates other tasks to the host program as
-much as possible. This includes the loading of 3D models, user interface
-interactions, image presentation and image saving. We believe this is the
-most useful and optimized way to solve the problem at hand.
-
 \section{Architecture}
 \label{sec:architecture}
 
 RenderGirl is composed of a \emph{core} that communicates with a given
-\emph{interface}. The overall architecture is depicted at figure~\ref{fig:architecture}. Each of these components has a specific set
-of tasks inside the program.
+\emph{interface}.
 
 The core portion is a static library that provides an API for
 receiving the 3D scene structure - vertices, triangles, objects,
@@ -292,65 +236,6 @@ they are:
   provide as reference design to other interfaces for RenderGirl.
 \end{itemize}
 
-The core API is designed to only have synchronous calls, so each
-function call will block the program - including the rendering
-function which can take several minutes to complete. The reasoning
-behind this is that every host program will provide different
-asynchronous APIs for its plugin system in a different manner (or even won't
-provide it at all) so we don't want to impose an asynchronous model at
-this stage of development, leaving it for the interfaces to implement
-their own. As an initial design decision to ease portability, the core
-contains no system-dependent calls apart from OpenCL itself.
-
-\begin{figure}
-\centering
-\input{architecture_overview.tex}
-\caption{Architecture of RenderGirl. Red represents core components,
-  orange represents interface components. Black represents third party
-  components.}
-\label{fig:architecture}
-\end{figure}
-
-\subsection{Blender Plugin}
-
-We implemented a Blender plugin, which effectively made Blender our
-host 3D program for all our tests. Having it within a major 3D program
-is useful since it provides many interesting facilities, such as 3D
-model loading.
-
-Blender does not expose a C/C++ API for its extensions, so we had to
-use the Python API instead. This raised the question of how we could
-connect the RenderGirl C++ API with the Python side. Several solutions
-were considered. One approach is to use the C Python
-API\footnote{Python C API manual
-  \url{https://docs.python.org/3.5/c-api/}} within a wrapper interface
-module for RenderGirl, this approach was deemed too complex since it
-would require the addition of a compile-time dependency with Python, it
-would also tie our version of Python to Blender's version, likely
-breaking compatibility when Blender decided to change its own
-version. Another approach was to use Swig\footnote{Swig website
-  \url{http://www.swig.org/}} for automatic wrapper generation, this
-option also has the downside of adding a compile time dependency and an
-extra build step.
-
-The solution we ultimately chose was to compile a small C wrapper
-around the RenderGirl core into a shared library. With a pure C
-interface, we then used a Python module called ctypes\footnote{ctypes
-  reference \url{https://docs.python.org/3.5/library/ctypes.html}},
-which can load shared libraries and execute C functions loaded from
-it. It provides support for callbacks - used on the log subsystem -
-and all basic C types. With this approach there's no new dependencies
-and no actual Python reference on the compiled Blender interface. We
-can also reuse it on a future plugin from another host program if it
-supports a C API.
-
-There's still a portion written in Python, mostly the conversion of
-data types and user interface additions to Blender. The major
-difference between the data from both programs is that Blender
-interprets the Y axis as depth instead of height. We also make use
-of triangulation features of Blender, to make the scene compatible
-with RenderGirl.
-
 \subsection{OpenCL scheduling model}
 
 OpenCL dispatches each execution of the raytracer by running a piece of
@@ -387,9 +272,7 @@ vertices buffer contains all vertices for the entire scene. The vertex
 buffer is indexed by the triangle buffer. The triangle buffer is then
 divided into regions that compose the objects. An object's metadata
 array describes where each object starts on the triangle buffer and
-where it ends. The triangle buffer is usually provided by the host
-program, so we must sanitize it to make sure it does not point past
-the end of the vertices array.
+where it ends.
 
 \begin{figure*}
 \centering
@@ -493,14 +376,6 @@ detailed on Algorithm~\ref{alg:bvh-traversal}.
 \end{algorithmic}
 \end{algorithm}
 
-This implementation is a little bit different than Thrane and Simonsen
-because they implemented the ray-traversal in several passes, where
-the control goes back to CPU, so they must retain intermediate
-renderer states and hit records. This approach is probably due to
-memory constraints at the time the implementation was done. Our
-rendering happens by enqueuing a single OpenCL kernel only once, and
-the control does not go back to the CPU until the frame is formed.
-
 \begin{figure}
 \centering
 \input{bvh.tex}
@@ -512,37 +387,6 @@ the control does not go back to the CPU until the frame is formed.
   objects, here depicted as a triangle.}
 \label{fig:bvh}
 \end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=0.45\textwidth]{traversal_array.png}
-\caption{Visualization of the BVH as in the traversal array.}
-\label{fig:traversal_array}
-\end{figure}
-
-\subsection{Log subsystem}
-
-The log subsystem provides an API for programs interested in capturing
-logs from the core. A simple log output such as \emph{stdout} and
-\emph{stderr} is not enough because it does not provide the choice of
-the output method, which is dependent on the host program. We provide
-a solution using a combination of the observer and singleton patterns.
-
-From the core perspective, the log is a singleton which can be called
-at any point of the raytracer, with no knowledge of the destination of
-the message. It provides two functions: \emph{message} and
-\emph{error}. \emph{Message} can be used by any message treated as a normal
-operation of the raytracer, such as information about state of
-devices, OpenCL execution and rendering times. \emph{Error} is used for
-logging errors, including OpenCL C syntax errors, which are generated at
-run-time by the driver's compiler.
-
-From the perspective of the interfaces, each of them needs to implement
-a \emph{LogListener} interface which provides the callbacks for
-receiving the messages. Each listener object registers with the log
-subsystem, which will keep a list of listeners and will forward the
-messages to all the objects on the list. The interface can then
-capture the messages and print it to the user.
 
 \section{Results}
 \label{sec:results}
@@ -587,7 +431,7 @@ scenes described previously. All tests were executed on a NVIDIA GeForce GTX
 970 using driver version 353.30. The OpenCL specification
 version used by this driver is 1.2.
 
-\begin{figure}
+\begin{figure}[bth]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -644,76 +488,6 @@ amount of objects, the reason for this is that we have a floor object
 on the scene that contains a great amount of triangles and covers most
 of the frame, creating a situation like the whale scene.
 
-We also tested against RenderGirl prior the implementation of the BVH,
-by using a scene with several copies of the "Suzanne" model that comes
-with Blender, but only one within the reach of the camera, rendered
-with 1500x1500 pixels of resolution. Each object has 968 triangles and
-507 vertices. We then tested both with and without the BVH with a
-different amount of objects, as shown in
-graph~\ref{fig:bvh-no-bvh-results}. In all tests, only one object
-visible.
-
-\begin{figure}
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-    title={Several Suzanne objects hidden from the camera},
-    xlabel={Objects},
-    ylabel={Milliseconds},
-    xmin=0, xmax=12,
-    ymin=0, ymax=1200,
-    xtick={0,1,4,8},
-    ytick={0,250,500,750,1000},
-    legend pos=north west,
-    ymajorgrids=true,
-    grid style=dashed,
-    scaled ticks=false, tick label style={/pgf/number format/fixed},
-    legend entries={With BVH , Without BVH},
-]
-\addplot[
-    color=black,mark=* , mark size=1,dashed,nodes near coords,nodes near coords align={horizontal}
-    ]
-    coordinates {(1,78)(4, 62)(8,62)};
-\addplot[
-    color=red,mark=*, mark size = 1,dashed,nodes near coords
-    ]
-    coordinates {(1,124)(4, 453)(8,1067)};
-
-\end{axis}
-\end{tikzpicture}
-\caption{Rendering time of three different scenes with a given amount
-  of hidden objects. In all scenes, only one object is visible while
-  the others are behind the camera.}
-\label{fig:bvh-no-bvh-results}
-\end{figure}
-
-Based on graph~\ref{fig:bvh-no-bvh-results} we can notice that a brute
-force approach forces the GPU to test against all geometry even if its
-behind the camera, making a more steep time increase. Meanwhile the
-BVH correctly ignore everything but the single object visible, so the
-render time barely changes.
-
-It was our intention to test the same scenes by rendering with and
-without the BVH, but we discovered that the non-BVH version is not
-capable of completing the render of scene 1, 2 and 4, crashing the
-NVIDIA driver before finishing, and sometimes showing half-rendered
-frames. This is likely because we enqueue a single kernel for the
-whole frame. The limitation does not seem to arrive from lack of
-memory, since both version have equal amount of memory consumption, so
-we assume the driver does not properly schedule our command buffer,
-and it is the application responsibility to make sure the kernel can
-be enqueued at a given time.
-
-For these results, we ignored the extra time spent on Python within
-Blender, so all times are measurements from RenderGirl Core and not
-from Blender. The Blender measurements are several seconds higher than
-the Core. We attribute this to the slower nature of the Python
-interpreter compared with native compiled code in C/C++. Also Blender
-has to perform the triangulation of the entire scene and the data
-structure conversion, which includes expensive division operations. We
-don't think this undermine the results of the BVH and the raytracer as
-whole, since we never focused our optimizations at this stage.
-
 
 \section{Conclusions and future work}
 \label{sec:conclusion}
@@ -739,20 +513,7 @@ other two interfaces. We can also take advantage of all the facilities
 Blender provides, such as image saving, 3D geometry loading and
 triangulation features. This spare us of having to implement all from
 scratch, enabling our work to be focused on the rendering
-itself. However, we think more work is needed on the Python side of
-RenderGirl, in order to reduce the extra seconds of delay we faced
-when rendering scenes from within Blender.
-
-Another welcome enhancement would be to dispatch the rendering into
-several passes, which would likely solve the problem of the driver
-crash in the non-BVH version of RenderGirl. In this approach a frame
-could be divided into smaller frames, and each kernel enqueue would
-render that specific sub-frame, until the full picture is generated.
-
-With this work, we aim to offer more options for developers of 3D
-modeling programs that want to incorporate a GPU raytracer into their
-software without writing one from scratch.
-
+itself.
 
 % \section*{Acknowledgments}
 

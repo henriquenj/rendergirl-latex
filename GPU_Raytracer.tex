@@ -34,11 +34,6 @@
 \and Vinicius Jurinic Cassol\thanks{e-mail: vjcassol@unisinos.br}}
 \affiliation{\scriptsize Universidade do Vale do Rio dos Sinos}
 
-\teaser{
-  \includegraphics[width=2.5in]{cabin.png}
-  \caption{A scene renderd by RenderGirl}
-}
-
 
 %% Abstract section.
 
@@ -557,6 +552,22 @@ a variety of scene configurations. We aim to test different kinds of
 object distributions in order to test how the BVH performs on each
 case. We used the following test scenes:
 
+\begin{figure*}[!hbt]
+\centering
+\minipage{0.3\textwidth}%
+  \includegraphics[width=\linewidth]{several_kitchen.png}
+  \caption{Scene 2 with the tables}\label{fig:tables}
+\endminipage
+\minipage{0.3\textwidth}
+  \includegraphics[width=\linewidth]{whale.png}
+  \caption{Scene 3 with the single whale object}\label{fig:whale_scene}
+\endminipage
+\minipage{0.3\textwidth}%
+  \includegraphics[width=\linewidth]{cabin.png}
+  \caption{Scene 4 with the cabin}\label{fig:cabin_scene}
+\endminipage
+\end{figure*}
+
 \begin{itemize}
 \item Scene 1: A simple scene depicting a table and some kitchen
   objects. It contains 21.424 vertices, 42,848 triangles divided into
@@ -703,27 +714,6 @@ structure conversion, which includes expensive division operations. We
 don't think this undermine the results of the BVH and the raytracer as
 whole, since we never focused our optimizations at this stage.
 
-\begin{figure*}[!htb]
-\minipage{0.5\textwidth}%
-  \includegraphics[width=\linewidth]{several_kitchen.png}
-  \caption{Scene 2 with the tables}\label{fig:tables}
-\endminipage
-\minipage{0.5\textwidth}
-  \includegraphics[width=\linewidth]{whale.png}
-  \caption{Scene 3 with the single whale object}\label{fig:whale_scene}
-\endminipage\hfill
-\end{figure*}
-
-\begin{figure*}[!htb]
-\minipage{0.5\textwidth}%
-  \includegraphics[width=\linewidth]{cabin.png}
-  \caption{Scene 4 with the cabin}\label{fig:cabin_scene}
-\endminipage
-\minipage{0.5\textwidth}
-  \includegraphics[width=\linewidth]{suzanne.png}
-  \caption{The scene with the hidden Suzanne objects}\label{fig:suzanne_scene}
-\endminipage\hfill
-\end{figure*}
 
 \section{Conclusions and future work}
 \label{sec:conclusion}

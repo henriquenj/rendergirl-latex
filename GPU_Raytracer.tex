@@ -510,14 +510,20 @@ the control does not go back to the CPU until the frame is formed.
 \centering
 \input{bvh.tex}
 
-\caption{Visualization of the BVH. The numbers indicate the order of
-  visiting. Dotted arrows represent where the traversal should resume
-  if the ray fails to hit the AABB. 9 is the global escape index. Each
-  leaf node holds an index to the global array of objects, here
-  depicted as a triangle.}
+\caption{Visualization of the BVH as a tree. The numbers indicate the
+  order of visiting. Dotted arrows represent where the traversal
+  should resume if the ray fails to hit the AABB. 9 is the global
+  escape index. Each leaf node holds an index to the global array of
+  objects, here depicted as a triangle.}
 \label{fig:bvh}
 \end{figure}
 
+\begin{figure}
+\centering
+\includegraphics[width=0.45\textwidth]{traversal_array.png}
+\caption{Visualization of the BVH as in the traversal array.}
+\label{fig:traversal_array}
+\end{figure}
 
 \subsection{Log subsystem}
 
@@ -627,7 +633,6 @@ amount of objects, the reason for this is that we have a floor object
 on the scene that contains a great amount of triangles and covers most
 of the frame, creating a situation like the whale scene.
 
-%revised up to here
 We also tested against RenderGirl prior the implementation of the BVH,
 by using a scene with several copies of the "Suzanne" model that comes
 with Blender, but only one within the reach of the camera, rendered

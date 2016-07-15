@@ -6,6 +6,7 @@
 
 
 rm data-organization.png
+rm traversal_array.png
 rm GPU_Raytracer.aux
 rm GPU_Raytracer.bbl
 rm GPU_Raytracer.blg
@@ -15,6 +16,7 @@ rm GPU_Raytracer.pdf
 
 # convert SVG to PNG
 inkscape data-organization.svg --export-png=data-organization.png &&
+inkscape traversal_array.svg --export-png=traversal_array.png &&
 pdflatex GPU_Raytracer &&
 bibtex GPU_Raytracer &&
 pdflatex GPU_Raytracer &&

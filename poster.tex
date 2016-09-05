@@ -73,7 +73,6 @@
 \color{Navy} % Navy color for the abstract
 
 \section*{Abstract}
-\large
 
 We describe the development of a modular plugin based raytracer
 renderer called \emph{RenderGirl} suitable for running inside the
@@ -103,14 +102,11 @@ with a given host program, seeking modularity.
 This work aims to provide a modular plugin-based raytracer software
 that takes advantage of the parallel capabilities of modern GPUs while
 maintaining hardware agnosticism by using the portability OpenCL
-provides to hardware vendors and developers. By being modular, it's
-also capable of running inside larger 3D suites such as Blender, this
-way we can delegate other tasks to the host 3D program and focus on
-the rendering tasks. We developed a C++ application and a reference
-plugin for Blender, used to validate this architecture. The code has
-only portable system calls and OpenCL function calls. We also
-developed a variant of the BVH partitioning structure suitable for
-stackless traversal on the GPU.
+provides to hardware vendors and developers. We developed a C++
+application and a reference plugin for Blender, used to validate this
+architecture. The code has only portable system calls and OpenCL
+function calls. We also developed a variant of the BVH partitioning
+structure suitable for stackless traversal on the GPU.
 
 Our contributions include:
 
@@ -213,10 +209,23 @@ is 1.2.
 
 \begin{center}\vspace{1cm}
 \includegraphics[width=0.8\linewidth]{results_rendered}
-\captionof{figure}{ \color{Black} }
+\captionof{figure}{ \color{Black} Rendering time of the four scenes
+  across different resolutions. Resolution value represents both width
+  and height. }
 \end{center}\vspace{1cm}
 
 
+%----------------------------------------------------------------------------------------
+%	CONCLUSIONS
+%----------------------------------------------------------------------------------------
+
+\section*{Conclusions and future development}
+
+For a future development, we could implement an hybrid of kd-tree and
+BVH by partitioning objects that are above a given threshold of
+triangle count. The plugin architecture was validated by embedding the
+Core on three different interfaces that can make use of the same
+unmodified library.
 
 \bibliographystyle{plain} % Plain referencing style
 \bibliography{references} % Use the example bibliography file sample.bib

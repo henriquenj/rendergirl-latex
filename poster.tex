@@ -98,62 +98,76 @@ scheme.
 %	INTRODUCTION
 %----------------------------------------------------------------------------------------
 
-\color{SaddleBrown} % SaddleBrown color for the introduction
+\color{Black} % SaddleBrown color for the introduction
 \large
 \section*{Introduction}
 
-Aliquam non lacus dolor, \textit{a aliquam quam}
-\cite{Smith:2012qr}. Cum sociis natoque penatibus et magnis dis
-parturient montes, nascetur ridiculus mus. Nulla in nibh mauris. Donec
-vel ligula nisi, a lacinia arcu. Sed mi dui, malesuada vel consectetur
-et, egestas porta nisi. Sed eleifend pharetra dolor, et dapibus est
-vulputate eu. \textbf{Integer faucibus elementum felis vitae
-  fringilla.} In hac habitasse platea dictumst. Duis tristique rutrum
-nisl, nec vulputate elit porta ut. Donec sodales sollicitudin turpis
-sed convallis. Etiam mauris ligula, blandit adipiscing condimentum eu,
-dapibus pellentesque risus.
+This work aims to provide a modular plugin-based raytracer software
+that takes advantage of the parallel capabilities of modern GPUs while
+maintaining hardware agnosticism by using the portability OpenCL
+provides to hardware vendors and developers. By being modular, it's
+also capable of running inside larger 3D suites such as Blender, this
+way we can delegate other tasks to the host 3D program and focus on
+the rendering tasks. We developed a C++ application and a reference
+plugin for Blender, used to validate this architecture. The code has
+only portable system calls and OpenCL function calls.
 
-\textit{Aliquam auctor}, metus id ultrices porta, risus enim cursus
-sapien, quis iaculis sapien tortor sed odio. Mauris ante orci, euismod
-vitae tincidunt eu, porta ut neque. Aenean sapien est, viverra vel
-lacinia nec, venenatis eu nulla. Maecenas ut nunc nibh, et tempus
-libero. Aenean vitae risus ante. Pellentesque condimentum dui. Etiam
-sagittis purus non tellus tempor volutpat. Donec et dui non massa
-tristique adipiscing.
+There are several acceleration structures meant to increase the
+efficiency of rendering, which are called \emph{spatial data
+  structures}. Some of these structures are \emph{bounding volume
+  hierarchies} (BVH), \emph{binary space partitioning}, trees,
+quad-trees and octrees. They hierarchically subdivide a scene so that
+the queries for their objects become faster
+\cite[Chapter~14.1]{akenine-moller:2008}. For RenderGirl, we developed
+a variant of the BVH partitioning structure suitable for stackless
+traversal on the GPU.
 
-%----------------------------------------------------------------------------------------
-%	OBJECTIVES
-%----------------------------------------------------------------------------------------
+Our contributions include:
 
-\color{DarkSlateGray} % DarkSlateGray color for the rest of the content
-
-\section*{Main Objectives}
-
-\begin{enumerate}
-\item Lorem ipsum dolor sit amet, consectetur.
-\item Nullam at mi nisl. Vestibulum est purus, ultricies cursus volutpat sit amet, vestibulum eu.
-\item Praesent tortor libero, vulputate quis elementum a, iaculis.
-\item Phasellus a quam mauris, non varius mauris. Fusce tristique, enim tempor varius porta, elit purus commodo velit, pretium mattis ligula nisl nec ante.
-\item Ut adipiscing accumsan sapien, sit amet pretium.
-\item Estibulum est purus, ultricies cursus volutpat
-\item Nullam at mi nisl. Vestibulum est purus, ultricies cursus volutpat sit amet, vestibulum eu.
-\item Praesent tortor libero, vulputate quis elementum a, iaculis.
-\end{enumerate}
+\begin{itemize}
+  \item A renderer independent of a given 3D software.
+  \item A raytracer designed to take advantage of parallel
+    computation capabilities of modern GPUs and other OpenCL-capable
+    devices.
+  \item A modular architecture with replaceable components that
+    communicates with a known interface.
+  \item Usage of acceleration structures suitable for storing scene
+    information inside OpenCL architecture.
+\end{itemize}
 
 %----------------------------------------------------------------------------------------
-%	MATERIALS AND METHODS
-%----------------------------------------------------------------------------------------
+%	ARCHITECTURE
+% ----------------------------------------------------------------------------------------
 
-\section*{Materials and Methods}
+\section*{Architecture}
 
-Fusce magna risus, molestie ut porttitor in, consectetur sed
-mi. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices
-posuere cubilia Curae; Pellentesque consectetur blandit
-pellentesque. Sed odio justo, viverra nec porttitor vel, lacinia a
-nunc. Suspendisse pulvinar euismod arcu, sit amet accumsan enim
-fermentum quis. In id mauris ut dui feugiat egestas. Vestibulum ac
-turpis lacinia nisl commodo sagittis eget sit amet sapien.
+RenderGirl is composed of a \emph{core} that communicates with a given
+\emph{interface}.
 
+The core portion is a static library that provides an API for
+receiving the 3D scene structure - vertices, triangles, objects,
+cameras and lights - and the OpenCL device selection. It performs all
+of the communication between OpenCL and the interfaces, handling its
+context.
+
+The interfaces can be anything from executables to dynamic libraries,
+depending on the plugin interface provided by the host 3D
+program. Interfaces link themselves to the core at compile time and
+translate all the requests from the host program.
+
+\subsection*{Acceleration structures}
+
+The process of using acceleration structures is usually divided in two
+steps: \emph{construction} and \emph{traversal}. For the construction
+step, we implemented the same method as described by Kay and
+Kajiya\cite{kay1986ray}, which generates a binary balanced tree
+containing the objects of the scene. On the traversal step, we
+implemented the traversal algorithm described by Thrane and Simonsen
+in their master thesis\cite{Thrane}, which generates a \emph{traversal
+  array} from the tree, which is suitable for stackless traversal on
+GPU. Each object is then only tested with an \emph{axis-aligned
+  bounding boxes} representing either an object or an internal node of
+the tree.
 
 %----------------------------------------------------------------------------------------
 %	RESULTS
@@ -162,54 +176,6 @@ turpis lacinia nisl commodo sagittis eget sit amet sapien.
 \section*{Results}
 
 
-\begin{center}\vspace{1cm}
-% \includegraphics[width=0.8\linewidth]{placeholder}
-\captionof{figure}{\color{Green} Figure caption}
-\end{center}\vspace{1cm}
-
-In hac habitasse platea dictumst. Etiam placerat, risus ac.
-
-Adipiscing lectus in magna blandit:
-
-\begin{center}\vspace{1cm}
-\begin{tabular}{l l l l}
-\toprule
-\textbf{Treatments} & \textbf{Response 1} & \textbf{Response 2} \\
-\midrule
-Treatment 1 & 0.0003262 & 0.562 \\
-Treatment 2 & 0.0015681 & 0.910 \\
-Treatment 3 & 0.0009271 & 0.296 \\
-\bottomrule
-\end{tabular}
-\captionof{table}{\color{Green} Table caption}
-\end{center}\vspace{1cm}
-
-Vivamus sed nibh ac metus tristique tristique a vitae ante. Sed
-lobortis mi ut arcu fringilla et adipiscing ligula rutrum. Aenean
-turpis velit, placerat eget tincidunt nec, ornare in nisl. In
-placerat.
-
-\begin{center}\vspace{1cm}
-% \includegraphics[width=0.8\linewidth]{placeholder}
-\captionof{figure}{\color{Green} Figure caption}
-\end{center}\vspace{1cm}
-
-%----------------------------------------------------------------------------------------
-%	CONCLUSIONS
-%----------------------------------------------------------------------------------------
-
-\color{SaddleBrown} % SaddleBrown color for the conclusions to make them stand out
-
-\section*{Conclusions}
-
-\begin{itemize}
-\item Pellentesque eget orci eros. Fusce ultricies, tellus et pellentesque fringilla, ante massa luctus libero, quis tristique purus urna nec nibh. Phasellus fermentum rutrum elementum. Nam quis justo lectus.
-\item Vestibulum sem ante, hendrerit a gravida ac, blandit quis magna.
-\item Donec sem metus, facilisis at condimentum eget, vehicula ut massa. Morbi consequat, diam sed convallis tincidunt, arcu nunc.
-\item Nunc at convallis urna. isus ante. Pellentesque condimentum dui. Etiam sagittis purus non tellus tempor volutpat. Donec et dui non massa tristique adipiscing.
-\end{itemize}
-
-\color{DarkSlateGray} % Set the color back to DarkSlateGray for the rest of the content
 
 %----------------------------------------------------------------------------------------
 %	FORTHCOMING RESEARCH
@@ -223,9 +189,8 @@ Vivamus molestie, risus tempor vehicula mattis, libero arcu volutpat purus, sed 
 %	REFERENCES
 %----------------------------------------------------------------------------------------
 
-\nocite{*} % Print all references regardless of whether they were cited in the poster or not
 \bibliographystyle{plain} % Plain referencing style
-\bibliography{sample} % Use the example bibliography file sample.bib
+\bibliography{references} % Use the example bibliography file sample.bib
 
 %----------------------------------------------------------------------------------------
 %	ACKNOWLEDGEMENTS

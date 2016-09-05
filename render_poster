@@ -3,7 +3,9 @@
 rm poster.aux
 rm poster.log
 rm poster.pdf
+rm traversal_array.png
 
+inkscape traversal_array.svg --export-png=traversal_array.png &&
 pdflatex poster &&
 bibtex poster &&
 pdflatex poster &&

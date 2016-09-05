@@ -90,16 +90,14 @@ implementation ready for stackless traversal on GPUs. RenderGirl is
 split between two main portions: Core and Interface, where the Core
 portions provide the bulk of ray-tracing operations and manage the
 communication with OpenCL; and the interfaces provide communication
-with a given host program, seeking modularity. In this work we
-describe our results and performance gains with our partitioning
-scheme.
+with a given host program, seeking modularity.
 
 %----------------------------------------------------------------------------------------
 %	INTRODUCTION
 %----------------------------------------------------------------------------------------
 
 \color{Black} % SaddleBrown color for the introduction
-\large
+\normalsize
 \section*{Introduction}
 
 This work aims to provide a modular plugin-based raytracer software
@@ -110,17 +108,9 @@ also capable of running inside larger 3D suites such as Blender, this
 way we can delegate other tasks to the host 3D program and focus on
 the rendering tasks. We developed a C++ application and a reference
 plugin for Blender, used to validate this architecture. The code has
-only portable system calls and OpenCL function calls.
-
-There are several acceleration structures meant to increase the
-efficiency of rendering, which are called \emph{spatial data
-  structures}. Some of these structures are \emph{bounding volume
-  hierarchies} (BVH), \emph{binary space partitioning}, trees,
-quad-trees and octrees. They hierarchically subdivide a scene so that
-the queries for their objects become faster
-\cite[Chapter~14.1]{akenine-moller:2008}. For RenderGirl, we developed
-a variant of the BVH partitioning structure suitable for stackless
-traversal on the GPU.
+only portable system calls and OpenCL function calls. We also
+developed a variant of the BVH partitioning structure suitable for
+stackless traversal on the GPU.
 
 Our contributions include:
 
@@ -169,36 +159,67 @@ GPU. Each object is then only tested with an \emph{axis-aligned
   bounding boxes} representing either an object or an internal node of
 the tree.
 
+\begin{center}\vspace{1cm}
+\includegraphics[width=0.8\linewidth]{bvh_rendered}
+\captionof{figure}{ \color{Black} Visualization of the BVH as a
+  tree. The numbers indicate the order of visiting. Dotted arrows
+  represent where the traversal should resume if the ray fails to hit
+  the AABB. 9 is the global escape index. Each leaf node holds an
+  index to the global array of objects, here depicted as a triangle.}
+\end{center}\vspace{1cm}
+
+\begin{center}\vspace{1cm}
+\includegraphics[width=0.8\linewidth]{traversal_array}
+\captionof{figure}{\color{Black} Visualization of the BVH as in the
+  traversal array.}
+\end{center}\vspace{1cm}
+
+
 %----------------------------------------------------------------------------------------
 %	RESULTS
 %----------------------------------------------------------------------------------------
 
 \section*{Results}
 
+We tested our raytracer implementation by running it from Blender using
+a variety of scene configurations. We aim to test different kinds of
+object distributions in order to test how the BVH performs on each
+case. We used the following test scenes:
+
+\begin{itemize}
+\item Scene 1: A simple scene depicting a table and some kitchen
+  objects. It contains 21.424 vertices, 42,848 triangles divided into
+  28 objects.
+\item Scene 2: The same scene as before but with several evenly
+  distributed tables. It contains 203.644 vertices, 405.242 triangles
+  divided into 233 objects.
+\item Scene 3: A scene with a single whale object containing 8.432
+  vertices and 16.764 triangles.
+\item Scene 4: A scene depicting a cabin. It contains 93.570 vertices,
+  178.104 triangles divided into 250 objects. See
+  figure~\ref{fig:cabin_scene}.
+\end{itemize}
+
+All tests were executed on a NVIDIA GeForce GTX 970 using driver
+version 353.30. The OpenCL specification version used by this driver
+is 1.2.
+
+\begin{center}\vspace{1cm}
+\includegraphics[width=0.8\linewidth]{cabin}
+\captionof{figure}{ \color{Black} A scene rendered by RenderGirl}
+\label{fig:cabin_scene}
+\end{center}\vspace{1cm}
 
 
-%----------------------------------------------------------------------------------------
-%	FORTHCOMING RESEARCH
-%----------------------------------------------------------------------------------------
+\begin{center}\vspace{1cm}
+\includegraphics[width=0.8\linewidth]{results_rendered}
+\captionof{figure}{ \color{Black} }
+\end{center}\vspace{1cm}
 
-\section*{Forthcoming Research}
 
-Vivamus molestie, risus tempor vehicula mattis, libero arcu volutpat purus, sed blandit sem nibh eget turpis. Maecenas rutrum dui blandit lorem vulputate gravida. Praesent venenatis mi vel lorem tempor at varius diam sagittis. Nam eu leo id turpis interdum luctus a sed augue. Nam tellus.
-
- %----------------------------------------------------------------------------------------
-%	REFERENCES
-%----------------------------------------------------------------------------------------
 
 \bibliographystyle{plain} % Plain referencing style
 \bibliography{references} % Use the example bibliography file sample.bib
-
-%----------------------------------------------------------------------------------------
-%	ACKNOWLEDGEMENTS
-%----------------------------------------------------------------------------------------
-
-\section*{Acknowledgements}
-
-Etiam fermentum, arcu ut gravida fringilla, dolor arcu laoreet justo, ut imperdiet urna arcu a arcu. Donec nec ante a dui tempus consectetur. Cras nisi turpis, dapibus sit amet mattis sed, laoreet.
 
 %----------------------------------------------------------------------------------------
 

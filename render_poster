@@ -1,0 +1,7 @@
+#!/bin/bash
+
+rm poster.aux
+rm poster.log
+rm poster.pdf
+
+pdflatex poster.tex
